@@ -51,10 +51,11 @@ block body
 		.row
 			.col-md-6
 				h3 Most recent activities
-				+table(["#","Name","Activities","Distance"],[["1","Mark Smith","3","285km"],["2","Jacob Thornton","4", "254km"],["3","Larry the Bird","3","221km"]])
+				+table(["Name","Activity","Distance","Type"],activities)
 
 			.col-md-6
 				h3 Top athletes
-				+table(["#","Name","Activities","Distance"],[["1","Mark Smith","3","285km"],["2","Jacob Thornton","4", "254km"],["3","Larry the Bird","3","221km"]])
+				+table(["Name","Country","Activties","Distance"],athletes)
 
 		+alert-info("<strong>Can't see your activity?</strong> Don't panic - activities are updated daily and may take a while to come through!")
+

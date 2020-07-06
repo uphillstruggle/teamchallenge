@@ -1,19 +1,15 @@
 var express = require('express');
-var passport = require('passport');
-var session = require('express-session');
 var router = express.Router();
 	
-function checkSignIn(req, res, next){
-   if(req.session.passport && req.session.passport.user){
-      next();
-   } else {
-	console.log("checkSignIn failed", req.session);
-	   res.redirect("/auth/login");
-   }
-}
-
-router.get('/', checkSignIn, function(req, res){
-	res.render('leaderboard', { user : req.session.passport.user });
-});
+router.get('/',   
+	function(req, res, next){
+		req.app.locals.db.getAthletes(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('leaderboard', { 
+			athletes: res.athletes
+		});
+	}
+);
 
 module.exports = router;
