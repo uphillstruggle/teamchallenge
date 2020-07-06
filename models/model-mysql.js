@@ -37,12 +37,28 @@ var moment      = require('moment');
 		  next();
 		});
 	}
-
-	function getTotalDistance(req, res, next)
-	{
+function getTotalDistance(req, res, next) {
 		db_connection.query('SELECT SUM(`distance`) as `distance` FROM `activities`', function (error, results, fields) {
 				if (error) throw error;
 				res.distance = Math.round(results[0].distance/1000);
+				next();
+			});
+	}
+
+	function getActivities(req, res, next)
+	{
+		db_connection.query('SELECT concat(`ath`.`firstname`," ",substr(`ath`.`lastname`,1,1)), `act`.`name`,round(`act`.`distance`/1000,1),`act`.`type` FROM `activities` act, `athletes` ath WHERE act.`athlete_id` = ath.`id` ORDER BY `act`.`start_date` DESC', function (error, results, fields) {
+				if (error) throw error;
+				res.activities = results;
+				next();
+			});
+	}
+
+	function getAthletes(req, res, next)
+	{
+		db_connection.query('SELECT CONCAT(`ath`.`firstname`, " ", SUBSTR(`ath`.`lastname`,1,1)), `ath`.`country`, COUNT(`act`.`id`), ROUND(SUM(`act`.`distance`)/1000,1) FROM `athletes` ath, `activities` act GROUP BY ath.`id`', function (error, results, fields) {
+				if (error) throw error;
+				res.athletes = results;
 				next();
 			});
 	}
@@ -97,5 +113,5 @@ var moment      = require('moment');
 			});
 	};
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance};
+module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getAthletes};
 
