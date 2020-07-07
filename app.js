@@ -24,7 +24,8 @@ passport.use(new stravaStrategy({
     clientSecret: process.env['STRAVA_CLIENT_SECRET'],
 	scope: 'read,activity:read',
 	//approval_prompt: 'force',
-    callbackURL: '/auth/callback'
+    //callbackURL: '/auth/callback'
+    callbackURL: 'https://gentle-river-03526.herokuapp.com/auth/callback'
   },
 	function(accessToken, refreshToken, profile, cb) {
 		// store access token in profile 
