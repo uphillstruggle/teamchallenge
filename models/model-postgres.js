@@ -127,10 +127,10 @@ function getTotalDistance(req, res, next) {
 		let updates = req.body['updates'];
 
 		// insert query contents into DB
-		var sql = format('INSERT INTO `webhook_messages` (id, aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (NULL, %L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', [aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates]);
+		var sql = format('INSERT INTO webhook_messages (id, aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (NULL, %L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', [aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates]);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
-				res.status(200).send('EVENT_RECEIVED');
+				next();
 			});
 	}
 
