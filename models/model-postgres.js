@@ -3,13 +3,15 @@ var moment = require('moment');
 var format = require('pg-format');
 // pools will use environment variables
 // for connection information
-const pool = new Pool()
+const pool = new Pool();
 
 	var event_id = process.env['EVENT_ID'];
 
 	function getEvent(req, res, next)
 	{
 		pool.query('SELECT * from strava.events WHERE id = $1', [event_id], (error, results) => {
+			if (error) throw error;
+			//
 			// prepare event data for template output
 			res.event = new Object();
 			res.event.id = results.rows[0].id;
