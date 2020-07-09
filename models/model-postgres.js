@@ -55,7 +55,7 @@ function getTotalDistance(req, res, next) {
 
 	function getAthletes(req, res, next)
 	{
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), ROUND(SUM(act.distance)/1000,1) FROM strava.athletes ath, strava.activities act GROUP BY ath.id', function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), ROUND(SUM(act.distance)/1000,1) FROM strava.athletes ath, strava.activities act WHERE act.athlete_id = ath.id GROUP BY ath.id', function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				console.log(res.athletes);
