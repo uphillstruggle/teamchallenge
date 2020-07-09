@@ -116,5 +116,23 @@ function getTotalDistance(req, res, next) {
 			});
 	};
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getAthletes};
+	function insertWebhookLog(req,res,next)
+	{
+		let aspect_type = req.body['aspect_type'];
+		let event_time = req.body['event_time'];
+		let object_id = req.body['object_id'];
+		let object_type = req.body['object_type'];
+		let owner_id = req.body['owner_id'];
+		let subscription_id = req.body['subscription_id'];
+		let updates = req.body['updates'];
+
+		// insert query contents into DB
+		var sql = format('INSERT INTO `webhook_messages` (id, aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (NULL, %L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', [aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates]);
+		client.query(sql, function (error, results) {
+				if (error) throw error;
+				next();
+			});
+	}
+
+module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getAthletes, insertWebhookLog};
 
