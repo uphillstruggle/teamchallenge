@@ -3,7 +3,7 @@ var router = express.Router();
 
 router.post('/', (req, res) => {
     console.log("webhook POST event received!", req.query, req.body);
-	req.app.locals.db.insertWebhookLog(req, res, next);
+	req.app.locals.db.insertWebhookLog(req, res);
 
 });
 
