@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
 var logger = require('morgan');
 var db = require("./models/model-postgres");
 var strava = require("./models/model-strava");
@@ -17,7 +18,6 @@ var webhookRouter = require('./routes/webhook');
 var passport = require('passport');
 var stravaStrategy = require('passport-strava').Strategy;
 var session = require("express-session");
-var bodyParser = require("body-parser");
 
 
 passport.use(new stravaStrategy({
@@ -63,6 +63,7 @@ app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveU
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use(bodyParser.json({strict: false}));
 app.use('/leaderboard', leaderboardRouter); 
 app.use('/profile', profileRouter); 
 app.use('/auth', authRouter); 
