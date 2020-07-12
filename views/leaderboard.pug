@@ -21,17 +21,21 @@ block body
 						a(href='/') Home
 					li.active
 						a(href='/leaderboard') Leaderboard
-					li
-						a(href='/profile') Profile
+					if user
+						li
+							a(href='/profile') #{user.displayName} 
+					if user
+						li
+							img(src=user.avatar width="50px")
+					else
+						li
+							a(href='/profile') Login
+
 		
 	.container.theme-showcase(role='main')
-		// Main jumbotron for a primary marketing message or call to action
-		.jumbotron
-			h1 Leaderboard
-
 		h2 Leaderboard
 		p
 			+table(["Name","Country","Activities","Distance"],athletes)
 
 
-		+alert-info("<strong>Can't see your activity?</strong> Don't panic - activities are updated daily and may take a while to come through!")
+		include footer.pug

@@ -66,8 +66,8 @@ function getTotalDistance(req, res, next) {
 			if (error) throw error;
 
 			// extract friendly name of activities from results and prepare for template output
-			req.activity_types = new Array();
-			results.rows.forEach(function(item) { req.activity_types.push(item.strava_name); }); 
+			res.activity_types = new Array();
+			results.rows.forEach(function(item) { res.activity_types.push(item.strava_name); }); 
 		  next();
 		});
 	};
@@ -152,7 +152,7 @@ function getTotalDistance(req, res, next) {
 		if (req.webhook_object_type === 'activity')
 		{
 			// check activity is one of the right type
-			if (req.activity_types.indexOf(req.activity.type) == -1) {
+			if (res.activity_types.indexOf(req.activity.type) == -1) {
 				// ignore this activity
 				console.log ("Activity type is not valid for event", req.activity.id, req.activity.type);
 				next();

@@ -23,7 +23,8 @@ router.get('/',
 			distance: res.distance,
 			activity_types: res.activity_types,
 			activities: res.activities,
-			athletes: res.athletes
+			athletes: res.athletes,
+			user: req.user
 		});
 	}
 );

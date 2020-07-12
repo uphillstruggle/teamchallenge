@@ -68,7 +68,7 @@ function fetchWebhookData(req, res, next)
 				function(err,payload,limits) {
 					if(err) throw(err);
 
-					req.activity = payload;
+					res.activity = payload;
 					next();
 				});
 			break;
@@ -94,7 +94,7 @@ function fetchAndStoreActivities(req, res, next)
 				// filter out the activities of the right type for this event
 				var qualifying_activities = new Array();
 				payload.forEach(function(activity) { 
-						if (req.activity_types.includes(activity.type)){
+						if (res.activity_types.includes(activity.type)){
 							qualifying_activities.push(activity);
 						}
 					});

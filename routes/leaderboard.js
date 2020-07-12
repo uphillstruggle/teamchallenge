@@ -7,7 +7,8 @@ router.get('/',
 	}, 
 	function(req, res, next){
 		res.render('leaderboard', { 
-			athletes: res.athletes
+			athletes: res.athletes,
+			user: req.user
 		});
 	}
 );

@@ -22,18 +22,17 @@ block body
 					li
 						a(href='/leaderboard') Leaderboard
 					li.active
-						a(href='/profile') Profile
+						a(href='/profile') #{user.displayName}
+					li
+						img(src=user.avatar width="50px")
+						
 		
 	.container.theme-showcase(role='main')
-		// Main jumbotron for a primary marketing message or call to action
-		.jumbotron
-			h1 Welcome #{user.displayName} !
-				img(src=user.avatar)
-
-		h2 Activities
+		h1 My activities
+		p Thanks for joining the challenge! These activities have been added to the challenge total:
 		p Qualifying activities from #{event.first_date} to #{event.last_date} of types #{activity_types}
 		p
 			+table(["#","Name","type","Date","Distance"],activities)
 
 
-		+alert-info("<strong>Can't see your activity?</strong> Don't panic - activities are updated daily and may take a while to come through!")
+		include footer.pug

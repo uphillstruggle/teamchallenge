@@ -3,7 +3,7 @@ append styles
 	// Bootstrap theme
 	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
 	// Custom styles for this template
-	link(href='/css/theme.css', rel='stylesheet')
+	link(href='/css/justified-nav.css', rel='stylesheet')
 block body
 	// Fixed navbar
 	nav.navbar.navbar-inverse.navbar-fixed-top
@@ -21,20 +21,27 @@ block body
 						a(href='/') Home
 					li
 						a(href='/leaderboard') Leaderboard
-					li
-						a(href='/profile') Profile
+					if user
+						li
+							a(href='/profile') #{user.displayName} 
+					if user
+						li
+							img(src=user.avatar width="50px")
+					else
+						li
+							a(href='/profile') Login
 		
 	.container.theme-showcase(role='main')
-		// Main jumbotron for a primary marketing message or call to action
 		.jumbotron
 			h1 #{event.name}
 			p
 				| #{event.description}
-			p Activites from #{event.first_date} to #{event.last_date}
-			p Activity types: #{activity_types} 
+			p
+				strong Activity date range 
+				|	#{event.first_date} to #{event.last_date} - 
+				strong Activity types: 
+				| #{activity_types} 
 
-		h3 Join the ride and add your miles to the total 
-			|  
 			+a-btn-primary("/auth/login#") Sign in with Strava
 
 
@@ -57,5 +64,5 @@ block body
 				h3 Top athletes
 				+table(["Name","Country","Activties","Distance"],athletes)
 
-		+alert-info("<strong>Can't see your activity?</strong> Don't panic - activities are updated daily and may take a while to come through!")
 
+		include footer.pug
