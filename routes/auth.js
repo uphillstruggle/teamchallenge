@@ -13,7 +13,6 @@ router.get('/error', function(req, res, next) {
 });
 
 router.get('/success', function(req, res, next) {
-	console.log("Successful login", req.session, req.profile);
 	res.render('success');
 });
 

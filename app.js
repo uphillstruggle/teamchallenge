@@ -28,9 +28,9 @@ passport.use(new stravaStrategy({
     callbackURL: '/auth/callback'
   },
 	function(accessToken, refreshToken, profile, cb) {
-		// store access token in profile 
-		// TODO put it somewhere more secure!
+		// store refresh and access token in profile 
 		profile.accessToken=accessToken;
+		profile.refreshToken=refreshToken;
 		return cb(null, profile);
     }
   ));
@@ -58,6 +58,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
+// Cookie initialisation - TODO better security
 app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
 
 app.use(passport.initialize());
@@ -88,5 +89,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-//app.listen(process.env['PORT'] || 8080);
 

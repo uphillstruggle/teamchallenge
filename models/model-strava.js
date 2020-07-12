@@ -1,5 +1,83 @@
 const stravaApi = require('strava-v3');
 var moment      = require('moment');
+const request = require('request-promise')
+
+function fetchAccessToken(req, res, next)
+{
+	// use athlete's refresh token to get a current access token to fetch their data
+	if (typeof req.refreshToken === 'undefined') {
+		throw(new Error("Refresh token not found"));
+	}
+
+	// Strava node module doesn't offer a callback version of the refresh token
+	// request, so we're going to roll our own here:
+	return request({
+		method: 'POST',
+		url: 'https://www.strava.com/oauth/token',
+		json: true,
+		qs: {
+			refresh_token: req.refreshToken, 
+			client_secret: process.env.STRAVA_CLIENT_SECRET,
+			client_id:  process.env.STRAVA_CLIENT_ID,
+			grant_type: 'refresh_token'
+		}}, function(err,payload,limits) { 
+			if (err) throw(err);
+			console.log("Strava returned access token:", payload.body.access_token);
+			req.accessToken=payload.body.access_token;
+			next();
+		}
+	);
+}
+
+function fetchWebhookData(req, res, next)
+{
+	// use athlete's refresh token to get a current access token to fetch their data
+	if (typeof req.accessToken === 'undefined') {
+		throw(new Error("Access token not found"));
+	}
+	req.webhook_aspect_type = req.body['aspect_type'];
+	req.webhook_object_type = req.body['object_type'];
+	req.webhook_object_id = req.body['object_id'];
+	req.webhook_owner_id = req.body['owner_id'];
+	console.log("Webhook call received: ", req.webhook_aspect_type, req.webhook_object_type, req.webhook_object_id, req.webhook_owner_id);
+
+	// delete requests don't require any fetching from strava
+	if (req.webhook_aspect_type === 'delete')
+	{
+		next();
+		return;
+	}
+
+	var strava = new stravaApi.client(req.accessToken);
+
+	switch(req.webhook_object_type)
+	{
+		case 'athlete':
+			console.log('Athlete webhook request: ', req.webhook_object_id);
+			strava.athlete.get({id:req.webhook_object_id},
+				function(err,payload,limits) {
+					if(err) throw(err);
+
+					req.athlete = payload;
+					next();
+				});
+			break;
+		case 'activity':
+			console.log('Activity webhook request: ', req.webhook_object_id);
+			strava.activities.get({id:req.webhook_object_id},
+				function(err,payload,limits) {
+					if(err) throw(err);
+
+					req.activity = payload;
+					next();
+				});
+			break;
+		default:
+			console.log('Unknown webhook request type: ', req.webhook_aspect_type, req.webhook_object_type, req.webhook_object_id);
+			next();
+	}
+
+};
 
 function fetchAndStoreActivities(req, res, next)
 {
@@ -16,7 +94,7 @@ function fetchAndStoreActivities(req, res, next)
 				// filter out the activities of the right type for this event
 				var qualifying_activities = new Array();
 				payload.forEach(function(activity) { 
-						if (res.activity_types.includes(activity.type)){
+						if (req.activity_types.includes(activity.type)){
 							qualifying_activities.push(activity);
 						}
 					});
@@ -51,5 +129,5 @@ function fetchAndStoreActivities(req, res, next)
 	}
 }; 
 
-module.exports = { fetchAndStoreActivities };
+module.exports = { fetchAndStoreActivities, fetchWebhookData, fetchAccessToken };
 

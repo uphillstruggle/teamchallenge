@@ -1,12 +1,39 @@
 var express = require('express');
 var router = express.Router();
 
-router.post('/', (req, res, next) => {
-	req.app.locals.db.insertWebhookLog(req, res, next);
-},
-function(req, res, next){
-	res.status(200).send('EVENT_RECEIVED');
-});
+// Strava webhooks send the app notifications whenever an athlete posts
+// a new activity or makes a change to their profile, subscription status
+// or activities are updated or deleted. This function processes these 
+// notifications.
+router.post('/', 
+	function(req, res, next){
+		// 1. Get the athlete's refresh token from their DB record
+		req.app.locals.db.lookupRefreshToken(req, res, next);
+	},
+	function(req, res, next){
+		// 2 Get the activity types that qualify
+		req.app.locals.db.getActivityTypes(req, res, next);
+	}, 
+	function(req, res, next){
+		// 3. Use the refresh token to get a new access token
+		req.app.locals.strava.fetchAccessToken(req, res, next);
+	},
+	function(req, res, next){
+		// 4. Get the current athlete or activity data from strava
+		req.app.locals.strava.fetchWebhookData(req, res, next);
+	},
+	function(req, res, next){
+		// 5. Update athlete or activity recorda
+		req.app.locals.db.processWebhook(req, res, next);
+	},
+	function(req, res, next){
+		// 6. Keep a record of the call
+		req.app.locals.db.insertWebhookLog(req, res, next);
+	},
+	function(req, res, next){
+		res.status(200).send('EVENT_RECEIVED');
+	}
+);
 
 router.get('/', (req, res) => {
 	// called once when a new subscription is established
