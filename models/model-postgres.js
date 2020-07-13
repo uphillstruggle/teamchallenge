@@ -53,7 +53,10 @@ function getTotalDistance(req, res, next) {
 
 	function getAthletes(req, res, next)
 	{
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), ROUND(SUM(act.distance)/1000,1) AS dist FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE act.start_date >= $1 AND act.start_date <= $2 GROUP BY ath.id ORDER BY 4 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
+		// Left join here ensures that athletes who have not yet
+		// logged a ride are still listed. Coalesce() gives them 
+		// a total distance of 0.
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				next();
