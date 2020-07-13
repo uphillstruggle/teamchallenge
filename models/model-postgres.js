@@ -88,6 +88,8 @@ function getTotalDistance(req, res, next) {
 		});
 
 		var sql = format('INSERT into strava.activities (id, athlete_id,name, distance, total_elevation_gain, type, start_date) values %L ON CONFLICT (id) DO UPDATE set athlete_id = EXCLUDED.athlete_id, name=EXCLUDED.name, distance=EXCLUDED.distance, total_elevation_gain=EXCLUDED.total_elevation_gain, type=EXCLUDED.type, start_date=EXCLUDED.start_date', insertArray);
+		console.log("UpdateActivities");
+		console.log(sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
 			});
