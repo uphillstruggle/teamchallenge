@@ -3,6 +3,9 @@ var router = express.Router();
 	
 router.get('/',   
 	function(req, res, next){
+		req.app.locals.db.getEvent(req, res, next);
+	}, 
+	function(req, res, next){
 		req.app.locals.db.getAthletes(req, res, next);
 	}, 
 	function(req, res, next){

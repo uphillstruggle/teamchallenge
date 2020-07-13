@@ -35,7 +35,7 @@ client.connect();
 
 
 function getTotalDistance(req, res, next) {
-		client.query('SELECT SUM(distance) as distance FROM strava.activities', function (error, results) {
+		client.query('SELECT SUM(distance) as distance FROM strava.activities WHERE start_date >= $1 AND start_date <= $2', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.distance = Math.round(results.rows[0].distance/1000);
 				next();
@@ -44,7 +44,7 @@ function getTotalDistance(req, res, next) {
 
 	function getActivities(req, res, next)
 	{
-		client.query('SELECT concat(ath.firstname,\' \',substr(ath.lastname,1,1)), act.name,round(act.distance/1000,1),act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id ORDER BY act.start_date DESC', function (error, results) {
+		client.query('SELECT concat(ath.firstname,\' \',substr(ath.lastname,1,1)), act.name,round(act.distance/1000,1),act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id AND act.start_date >= $1 AND act.start_date <= $2 ORDER BY act.start_date DESC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.activities = results.rows;
 				next();
@@ -53,7 +53,7 @@ function getTotalDistance(req, res, next) {
 
 	function getAthletes(req, res, next)
 	{
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), ROUND(SUM(act.distance)/1000,1) FROM strava.athletes ath, strava.activities act WHERE act.athlete_id = ath.id GROUP BY ath.id', function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), ROUND(SUM(act.distance)/1000,1) AS dist FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE act.start_date >= $1 AND act.start_date <= $2 GROUP BY ath.id ORDER BY dist DESC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				next();
@@ -91,8 +91,6 @@ function getTotalDistance(req, res, next) {
 		});
 
 		var sql = format('INSERT into strava.activities (id, athlete_id,name, distance, total_elevation_gain, type, start_date) values %L ON CONFLICT (id) DO UPDATE set athlete_id = EXCLUDED.athlete_id, name=EXCLUDED.name, distance=EXCLUDED.distance, total_elevation_gain=EXCLUDED.total_elevation_gain, type=EXCLUDED.type, start_date=EXCLUDED.start_date', insertArray);
-		console.log("UpdateActivities");
-		console.log(sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
 			});
