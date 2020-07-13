@@ -1,6 +1,6 @@
-# teamchallenge
-Combines strava activities from groups working towards charitable goals
+# TeamChallenge
+A team leaderboard for Strava athletes working together towards charitable goals
 
-INSTALL
-npm install
+Currently in early testing at https://teamchallenge.herokuapp.com
 
+More docs coming soon!
