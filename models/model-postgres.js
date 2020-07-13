@@ -74,6 +74,9 @@ function getTotalDistance(req, res, next) {
 
 	function updateActivities(activities)
 	{
+		if (activities.length == 0)
+			return;
+
 		var insertArray = new Array();
 		activities.forEach(function(activity) {
 			var values = new Array();
