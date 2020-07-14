@@ -133,8 +133,10 @@ function getTotalDistance(req, res, next) {
 
 	function processWebhook(req,res,next)
 	{
+		console.log("processWebhook");
 		if (req.webhook_aspect_type === 'delete')
 		{
+			console.log("delete request");
 			// delete activity or athlete
 			if (req.webhook_object_type === 'activity')
 			{
@@ -157,39 +159,43 @@ function getTotalDistance(req, res, next) {
 
 		if (req.webhook_object_type === 'activity')
 		{
+			console.log("activity request");
 			// check activity is one of the right type
-			if (res.activity_types.indexOf(req.activity.type) == -1) {
+			if (res.activity_types.indexOf(res.activity.type) == -1) {
 				// ignore this activity
-				console.log ("Activity type is not valid for event", req.activity.id, req.activity.type);
+				console.log ("Activity type is not valid for event", res.activity.id, res.activity.type);
 				next();
 				return;
 			}
 
 			// insert or update activity
-			var sql = format('INSERT into strava.activities (id, athlete_id,name, distance, total_elevation_gain, type, start_date) values (%L,%L,%L,%L,%L,%L,%L) ON CONFLICT (id) DO UPDATE set athlete_id = EXCLUDED.athlete_id, name=EXCLUDED.name, distance=EXCLUDED.distance, total_elevation_gain=EXCLUDED.total_elevation_gain, type=EXCLUDED.type, start_date=EXCLUDED.start_date', req.activity.id, req.activity.athlete.id, req.activity.name, req.activity.distance, req.activity.total_elevation_gain, req.activity.type, moment(req.activity.start_date).format('YYYY-MM-DD'));
+			var sql = format('INSERT into strava.activities (id, athlete_id,name, distance, total_elevation_gain, type, start_date) values (%L,%L,%L,%L,%L,%L,%L) ON CONFLICT (id) DO UPDATE set athlete_id = EXCLUDED.athlete_id, name=EXCLUDED.name, distance=EXCLUDED.distance, total_elevation_gain=EXCLUDED.total_elevation_gain, type=EXCLUDED.type, start_date=EXCLUDED.start_date', res.activity.id, res.activity.athlete.id, res.activity.name, res.activity.distance, res.activity.total_elevation_gain, res.activity.type, moment(res.activity.start_date).format('YYYY-MM-DD'));
+			console.log("Executing sql: ", sql);
 			client.query(sql, function (error, results) {
 					if (error) throw error;
-					console.log("Successfully updated activity ",req.activity.id);
+					console.log("Successfully updated activity ",res.activity.id);
 					next();
 				});
 		}
 		else if (req.webhook_object_type === 'athlete' && req.webhook_aspect_type === 'update' )
 		{
+			console.log("athlete update request");
 			// update athlete (insert handled by profile)
 			var sql = format('UPDATE strava.athletes SET username=%L, firstname=%L, lastname=%L, country=%L, sex=%L, profile_medium=%L, profile=%L, access_token=%L, refresh_token=%L WHERE id = %L', 
-				req.athlete.username,
-				req.athlete.firstname,
-				req.athlete.lastname,
-				req.athlete.country,
-				req.athlete.sex,
-				req.athlete.profile_medium,
-				req.athlete.profile,
-				req.accessToken,
-				req.refreshToken,
-				req.athlete.id);
+				res.athlete.username,
+				res.athlete.firstname,
+				res.athlete.lastname,
+				res.athlete.country,
+				res.athlete.sex,
+				res.athlete.profile_medium,
+				res.athlete.profile,
+				res.accessToken,
+				res.refreshToken,
+				res.athlete.id);
+			console.log("Executing sql: ", sql);
 			client.query(sql, function (error, results) {
 					if (error) throw error;
-					console.log("Successfully updated athlete ",req.athlete.id);
+					console.log("Successfully updated athlete ",res.athlete.id);
 					next();
 				});
 		}
@@ -197,6 +203,7 @@ function getTotalDistance(req, res, next) {
 
 	function insertWebhookLog(req,res,next)
 	{
+		console.log("insertWebhookLog: ", sql);
 		let aspect_type = req.body['aspect_type'];
 		let event_time = req.body['event_time'];
 		let object_id = req.body['object_id'];
@@ -207,6 +214,7 @@ function getTotalDistance(req, res, next) {
 
 		// insert query contents into DB
 		var sql = format('INSERT INTO webhook_messages (aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (%L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates);
+		console.log("Executing sql: ", sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
 				next();

@@ -58,7 +58,7 @@ function fetchWebhookData(req, res, next)
 				function(err,payload,limits) {
 					if(err) throw(err);
 
-					req.athlete = payload;
+					res.athlete = payload;
 					next();
 				});
 			break;
