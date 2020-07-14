@@ -44,7 +44,7 @@ function getTotalDistance(req, res, next) {
 
 	function getActivities(req, res, next)
 	{
-		client.query('SELECT TO_CHAR(act.start_date,\'dd/mm/yyyy\'), concat(ath.firstname,\' \',substr(ath.lastname,1,1)), act.name,round(act.distance/1000,1),act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id AND act.start_date >= $1 AND act.start_date <= $2 ORDER BY 1 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT act.start_date, TO_CHAR(act.start_date,\'dd/mm/yyyy\') as date, concat(ath.firstname,\' \',substr(ath.lastname,1,1)) as athlete, act.name,round(act.distance/1000,1) as distance,act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id AND act.start_date >= $1 AND act.start_date <= $2 ORDER BY 1 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.activities = results.rows;
 				next();
