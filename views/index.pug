@@ -36,14 +36,19 @@ block body
 			h1 #{event.name}
 			p
 				| #{event.description}
+			.container(style="width:943px;")
+				+carousel("main_carousel",[
+	{image:"images/carousel1.jpg",h1:"",p:"",button:{caption:"Sign in with Strava",url:"/auth/login"}},
+	{image:"images/carousel2.jpg",h1:"",p:"",button:{caption:"Make a donation",url:"https://www.justgiving.com/fundraising/tour-de-monterosa"}}
+
+])
+
+			p
 			p
 				strong Activity date range 
 				|	#{event.first_date} to #{event.last_date} - 
 				strong Activity types: 
 				| #{activity_types} 
-
-			+a-btn-primary("/auth/login#") Sign in with Strava
-
 
 		h2 Progress so far #{distance * 100 / event.distance_goal} %
 		table.table
