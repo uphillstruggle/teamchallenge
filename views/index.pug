@@ -1,5 +1,7 @@
 extends _bootstrap
 append styles
+	title #{event.name}
+	meta(description=event.description)
 	// Bootstrap theme
 	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
 	// Custom styles for this template
