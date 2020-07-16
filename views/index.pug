@@ -49,7 +49,7 @@ block body
 				strong Activity types: 
 				| #{activity_types} 
 
-		h2 Progress so far #{distance * 100 / event.distance_goal} %
+		h2 Progress so far #{Math.trunc(distance * 100) / event.distance_goal} %
 		table.table
 			tr
 				td(style="text-align:left;") 0 km
