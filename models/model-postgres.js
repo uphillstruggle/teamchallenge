@@ -44,7 +44,7 @@ function getTotalDistance(req, res, next) {
 
 	function getActivities(req, res, next)
 	{
-		client.query('SELECT act.id, TO_CHAR(act.start_date,\'dd/mm/yyyy\') as date, concat(ath.firstname,\' \',substr(ath.lastname,1,1)) as athlete, act.name,round(act.distance/1000,1) as distance,act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id AND act.start_date >= $1 AND act.start_date <= $2 ORDER BY 1 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT act.id, TO_CHAR(act.start_date,\'dd/mm/yyyy\') as date, concat(ath.firstname,\' \',substr(ath.lastname,1,1)) as athlete, act.name,round(act.distance/1000,1) as distance,act.type FROM strava.activities act, strava.athletes ath WHERE act.athlete_id = ath.id AND act.start_date >= $1 AND act.start_date <= $2 ORDER BY 1 DESC LIMIT 15', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.activities = results.rows;
 				next();
@@ -56,7 +56,7 @@ function getTotalDistance(req, res, next) {
 		// Left join here ensures that athletes who have not yet
 		// logged a ride are still listed. Coalesce() gives them 
 		// a total distance of 0.
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC LIMIT 15', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				next();
