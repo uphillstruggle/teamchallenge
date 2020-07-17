@@ -1,6 +1,5 @@
 extends _bootstrap
 append styles
-	title #{event.name}
 	meta(description=event.description)
 	// Bootstrap theme
 	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
@@ -16,7 +15,7 @@ block body
 					span.icon-bar
 					span.icon-bar
 					span.icon-bar
-				a.navbar-brand(href='#') Tour de Monterosa
+				a.navbar-brand(href='#') #{event.shortname}
 			#navbar.navbar-collapse.collapse
 				ul.nav.navbar-nav
 					li.active

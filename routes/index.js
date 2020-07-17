@@ -24,7 +24,9 @@ router.get('/',
 			activity_types: res.activity_types,
 			activities: res.activities,
 			athletes: res.athletes,
-			user: req.user
+			user: req.user,
+			title: res.event.name,
+			description: res.event.description
 		});
 	}
 );

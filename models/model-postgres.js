@@ -22,6 +22,7 @@ client.connect();
 			res.event = new Object();
 			res.event.id = results.rows[0].id;
 			res.event.name = results.rows[0].name;
+			res.event.shortname = results.rows[0].name;
 			res.event.description = results.rows[0].description;
 			res.event.distance_goal = results.rows[0].distance_goal;
 			res.event.first_date = moment(results.rows[0].first_date).format('LL');
