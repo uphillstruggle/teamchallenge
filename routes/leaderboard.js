@@ -10,8 +10,11 @@ router.get('/',
 	}, 
 	function(req, res, next){
 		res.render('leaderboard', { 
+			event: res.event,
 			athletes: res.athletes,
-			user: req.user
+			user: req.user,
+			title: res.event.name,
+			description: res.event.description
 		});
 	}
 );

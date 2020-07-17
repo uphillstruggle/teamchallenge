@@ -28,7 +28,9 @@ router.get('/', checkSignIn,
 			activities: res.activities,
 			user: req.user,
 			event: res.event, 
-			activity_types: res.activity_types 
+			activity_types: res.activity_types ,
+			title: res.event.name,
+			description: res.event.description
 		});
 	}
 );
