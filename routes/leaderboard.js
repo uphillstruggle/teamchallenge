@@ -13,8 +13,9 @@ router.get('/',
 			event: res.event,
 			athletes: res.athletes,
 			user: req.user,
-			title: res.event.name,
-			description: res.event.description
+			title: res.event.shortname,
+			description: res.event.description,
+			shareimage: res.event.shareimage
 		});
 	}
 );
