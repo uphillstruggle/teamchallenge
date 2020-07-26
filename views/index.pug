@@ -50,6 +50,9 @@ block body
 				strong Activity types: 
 				| #{activity_types} 
 
+			h3 Stages
+			+table(["Id","Stage","Distance","Elevation","Startdistance","Name","Image"],stages)
+
 		h2 Progress so far #{ Math.trunc(distance*1000 / event.distance_goal)/10} %
 		table.table
 			tr

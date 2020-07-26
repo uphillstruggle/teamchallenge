@@ -53,6 +53,15 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
+	function getStages(req, res, next)
+	{
+		client.query('SELECT id, stage, distance, elevation, startdistance, name, image FROM stages WHERE eventid = $1 ORDER BY stage ASC', [res.event.id], function (error, results) {
+				if (error) throw error;
+				res.stages = results.rows;
+				next();
+			});
+	}
+
 	function getAthletes(req, res, next)
 	{
 		// Left join here ensures that athletes who have not yet
@@ -223,5 +232,5 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getAthletes, processWebhook, lookupRefreshToken, insertWebhookLog};
+module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, processWebhook, lookupRefreshToken, insertWebhookLog};
 

@@ -12,6 +12,9 @@ router.get('/',
 		req.app.locals.db.getActivityTypes(req, res, next);
 	}, 
 	function(req, res, next){
+		req.app.locals.db.getStages(req, res, next);
+	}, 
+	function(req, res, next){
 		req.app.locals.db.getActivities(req, res, next);
 	}, 
 	function(req, res, next){
@@ -23,6 +26,7 @@ router.get('/',
 			distance: res.distance,
 			activity_types: res.activity_types,
 			activities: res.activities,
+			stages: res.stages,
 			athletes: res.athletes,
 			user: req.user,
 			title: res.event.shortname,
