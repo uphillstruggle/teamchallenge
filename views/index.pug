@@ -37,7 +37,7 @@ block body
 			h1 #{event.name}
 			p
 				| #{event.description}
-				+carousel("main_carousel",[ {image:"images/stage3-bru-ber.jpg"}, {image:"images/routemap.jpg"}, {image:"images/bloodcancer.jpg"} ])
+				+carousel("main_carousel",[ {image:titleimage}, {image:"images/routemap.jpg"}, {image:"images/bloodcancer.jpg"} ])
 
 			p
 			p
@@ -50,7 +50,7 @@ block body
 				strong Activity types: 
 				| #{activity_types} 
 
-			h3 Stages
+			h3 Current stage: #{stage}
 			+table(["Id","Stage","Distance","Elevation","Startdistance","Name","Image"],stages)
 
 		h2 Progress so far #{ Math.trunc(distance*1000 / event.distance_goal)/10} %

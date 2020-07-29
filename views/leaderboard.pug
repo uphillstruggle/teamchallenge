@@ -33,9 +33,13 @@ block body
 
 		
 	.container.theme-showcase(role='main')
-		h2 Leaderboard
+		h2 Leaderboard overall
 		p
 			+table(["Name","Country","Activities","Distance"],athletes)
+
+		h2 Leaderboard Stage #{stage}
+		p
+			+table(["Name","Country","Activities","Distance"],athletesbystage)
 
 
 		include footer.pug

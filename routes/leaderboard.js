@@ -6,16 +6,28 @@ router.get('/',
 		req.app.locals.db.getEvent(req, res, next);
 	}, 
 	function(req, res, next){
+		req.app.locals.db.getTotalDistance(req, res, next);
+	}, 
+	function(req, res, next){
+		req.app.locals.db.getStages(req, res, next);
+	}, 
+	function(req, res, next){
 		req.app.locals.db.getAthletes(req, res, next);
+	}, 
+	function(req, res, next){
+		req.app.locals.db.getAthletesCurrentStage(req, res, next);
 	}, 
 	function(req, res, next){
 		res.render('leaderboard', { 
 			event: res.event,
+			stage: res.stage,
+			stages: res.stages,
 			athletes: res.athletes,
+			athletesbystage: res.athletesbystage,
 			user: req.user,
 			title: res.event.shortname,
-			description: res.event.description,
-			shareimage: res.event.shareimage
+			shareimage:res.stages[res.stage-1].image,
+			titleimage:res.stages[res.stage-1].image,
 		});
 	}
 );

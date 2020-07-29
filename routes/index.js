@@ -27,11 +27,13 @@ router.get('/',
 			activity_types: res.activity_types,
 			activities: res.activities,
 			stages: res.stages,
+			stage: res.stage,
 			athletes: res.athletes,
 			user: req.user,
 			title: res.event.shortname,
 			description: res.event.description,
-			shareimage:res.event.shareimage
+			shareimage:res.stages[res.stage-1].image,
+			titleimage:res.stages[res.stage-1].image,
 		});
 	}
 );
