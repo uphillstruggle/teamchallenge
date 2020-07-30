@@ -72,7 +72,7 @@ function getTotalDistance(req, res, next) {
 	{
 		// get all activities without grouping and don't count 
 		// athletes with no activities for these stage leaderboards.
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, 1 as count, ROUND(act.distance/1000,1) as distance FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) ORDER BY act.start_date ASC, act.id ASC', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, 1 as count, act.total_elevation_gain as elevation, ROUND(act.distance/1000,1) as distance FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) ORDER BY act.start_date ASC, act.id ASC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 			
 				res.stageLeaderboards = new Array();
@@ -96,6 +96,7 @@ function getTotalDistance(req, res, next) {
 							result.name = results.rows[i].name;
 							result.country = results.rows[i].country;
 							result.count = results.rows[i].count;
+							result.elevation = results.rows[i].elevation;
 							result.distance = results.rows[i].distance;
 							activitiesforstage.push(result);
 						}
@@ -109,6 +110,7 @@ function getTotalDistance(req, res, next) {
 							if (leaderboard.athletes[i].name === activity.name)
 							{
 								leaderboard.athletes[i].distance = Math.round((parseFloat(leaderboard.athletes[i].distance) + parseFloat(activity.distance))*10)/10;
+								leaderboard.athletes[i].elevation = parseInt(leaderboard.athletes[i].elevation) + parseInt(activity.elevation);
 								leaderboard.athletes[i].count += 1;
 								found = 1;
 							}
@@ -137,7 +139,7 @@ function getTotalDistance(req, res, next) {
 		// Left join here ensures that athletes who have not yet
 		// logged a ride are still listed. Coalesce() gives them 
 		// a total distance of 0.
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC ', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, COUNT(act.id) as activities, SUM(act.total_elevation_gain) as elevation, COALESCE(ROUND(SUM(act.distance)/1000,1),0) as distance FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY distance DESC ', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				next();
