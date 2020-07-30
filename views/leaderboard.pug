@@ -35,12 +35,12 @@ block body
 	.container.theme-showcase(role='main')
 		h2 Leaderboard overall
 		p
-			+table(["Name","Country","Activities","Elevation", "Distance"],athletes)
+			+table(["Name","Country","Activities","Elevation m", "Distance km"],athletes)
 
 		each row in athletesbystage
 			h2 Leaderboard Stage #{row.stage} #{stages[row.stage-1].name} (#{stages[row.stage-1].distance}km)
 			p
-				+table(["Name","Country","Activities","Elevation","Distance"],row.athletes)
+				+table(["Name","Country","Activities","Elevation m","Distance km"],row.athletes)
 
 
 		include footer.pug
