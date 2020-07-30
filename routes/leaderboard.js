@@ -15,7 +15,7 @@ router.get('/',
 		req.app.locals.db.getAthletes(req, res, next);
 	}, 
 	function(req, res, next){
-		req.app.locals.db.getAthletesCurrentStage(req, res, next);
+		req.app.locals.db.getAthletesAllStages(req, res, next);
 	}, 
 	function(req, res, next){
 		res.render('leaderboard', { 
@@ -23,7 +23,7 @@ router.get('/',
 			stage: res.stage,
 			stages: res.stages,
 			athletes: res.athletes,
-			athletesbystage: res.athletesbystage,
+			athletesbystage: res.stageLeaderboards,
 			user: req.user,
 			title: res.event.shortname,
 			shareimage:res.stages[res.stage-1].image,

@@ -37,9 +37,10 @@ block body
 		p
 			+table(["Name","Country","Activities","Distance"],athletes)
 
-		h2 Leaderboard Stage #{stage}
-		p
-			+table(["Name","Country","Activities","Distance"],athletesbystage)
+		each row in athletesbystage
+			h2 Leaderboard Stage #{row.stage} #{stages[row.stage-1].name} (#{stages[row.stage-1].distance}km)
+			p
+				+table(["Name","Country","Activities","Distance"],row.athletes)
 
 
 		include footer.pug

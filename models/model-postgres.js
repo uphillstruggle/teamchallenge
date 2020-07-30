@@ -68,54 +68,66 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
-	function getAthletesCurrentStage(req, res, next)
+	function getAthletesAllStages(req, res, next)
 	{
 		// get all activities without grouping and don't count 
 		// athletes with no activities for these stage leaderboards.
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, 1 as count, ROUND(act.distance/1000,1) as distance FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) ORDER BY act.start_date DESC, act.id DESC', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, 1 as count, ROUND(act.distance/1000,1) as distance FROM strava.athletes ath JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) ORDER BY act.start_date ASC, act.id ASC', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 			
-				// programatically select the activities relevant to this stage
-				var activitiesforstage = new Array();
-				var total=0.0;
-				for (i=results.rows.length-1; i>=0; i--)
+				res.stageLeaderboards = new Array();
+				for (s=0; s<res.stage; s++)
 				{
-					if (total >= (res.stages[res.stage-1].startdistance))
+					var leaderboard = new Object();
+					leaderboard.stage = s+1;
+					leaderboard.athletes = new Array;
+					res.stageLeaderboards.push(leaderboard);
+
+					var activitiesforstage = new Array();
+
+					// select the activities relevant to this stage
+					var total=0.0;
+					for (i=0;i<results.rows.length; i++)
 					{
-						// this one counts
-						activitiesforstage.push(results.rows[i]);
-					}
-					total += parseFloat(results.rows[i].distance);
-					if (total >= (res.stages[res.stage-1].startdistance))
-					{
-						console.log(total);
-						console.log(results.rows[i]);
+						if (total >= (res.stages[s].startdistance) && total<(parseFloat(res.stages[s].startdistance) + parseFloat(res.stages[s].distance)))
+						{
+							// this one counts
+							var result = new Object();
+							result.name = results.rows[i].name;
+							result.country = results.rows[i].country;
+							result.count = results.rows[i].count;
+							result.distance = results.rows[i].distance;
+							activitiesforstage.push(result);
+						}
+						total += parseFloat(results.rows[i].distance);
 					}
 
+					activitiesforstage.forEach(function(activity) {
+						var found = 0;
+						for (i=0;i<leaderboard.athletes.length;i++)
+						{
+							if (leaderboard.athletes[i].name === activity.name)
+							{
+								leaderboard.athletes[i].distance = Math.round((parseFloat(leaderboard.athletes[i].distance) + parseFloat(activity.distance))*10)/10;
+								leaderboard.athletes[i].count += 1;
+								found = 1;
+							}
+						}
+						if (!found)
+						{
+							leaderboard.athletes.push(activity);
+						}
+					});
+					
+					leaderboard.athletes.sort(function(a,b) {
+						return b.distance - a.distance;
+					});
 				}
 
-				res.athletesbystage = new Array();
-				activitiesforstage.forEach(function(activity) {
-					var found = 0;
-					for (i=0;i<res.athletesbystage.length;i++)
-					{
-						if (res.athletesbystage[i].name === activity.name)
-						{
-							res.athletesbystage[i].distance = Math.round((parseFloat(res.athletesbystage[i].distance) + parseFloat(activity.distance))*10)/10;
-							res.athletesbystage[i].count += 1;
-							found = 1;
-						}
-					}
-					if (!found)
-					{
-						res.athletesbystage.push(activity);
-					}
+				res.stageLeaderboards.sort(function(a,b) {
+					return b.stage - a.stage;
 				});
-				
-				res.athletesbystage.sort(function(a,b) {
-					return b.distance - a.distance;
-				});
-				
+
 				next();
 			});
 	}
@@ -125,7 +137,7 @@ function getTotalDistance(req, res, next) {
 		// Left join here ensures that athletes who have not yet
 		// logged a ride are still listed. Coalesce() gives them 
 		// a total distance of 0.
-		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC LIMIT 15', [res.event.first_date, res.event.last_date], function (error, results) {
+		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)), ath.country, COUNT(act.id), COALESCE(ROUND(SUM(act.distance)/1000,1),0) FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY 4 DESC ', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
 				next();
@@ -290,5 +302,5 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesCurrentStage, processWebhook, lookupRefreshToken, insertWebhookLog};
+module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog};
 
