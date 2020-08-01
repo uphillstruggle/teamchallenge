@@ -142,8 +142,16 @@ function getTotalDistance(req, res, next) {
 						}
 					}
 
-					leaderboard.athletes[yellow].jersey = 'images/yellow.png';
-					leaderboard.athletes[polka].jersey = 'images/polkadot.png';
+					if (yellow == polka)
+					{
+						leaderboard.athletes[yellow].jersey = 'images/yellow-polka.png';
+					}
+					else
+					{
+						leaderboard.athletes[yellow].jersey = 'images/yellow.png';
+						leaderboard.athletes[polka].jersey = 'images/polkadot.png';
+					}
+
 				}
 
 				res.stageLeaderboards.sort(function(a,b) {
