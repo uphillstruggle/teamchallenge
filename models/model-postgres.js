@@ -124,6 +124,26 @@ function getTotalDistance(req, res, next) {
 					leaderboard.athletes.sort(function(a,b) {
 						return b.distance - a.distance;
 					});
+
+					// Calculate jerseys
+					var yellow=-1, maxdist=0.0, polka=-1, maxelev=0;
+					for (i=0;i<leaderboard.athletes.length;i++)
+					{
+						leaderboard.athletes[i].jersey='';
+						if (leaderboard.athletes[i].distance > maxdist)
+						{
+							maxdist = parseFloat(leaderboard.athletes[i].distance);
+							yellow = i;
+						}
+						if (leaderboard.athletes[i].elevation > maxelev)
+						{
+							maxelev = parseFloat(leaderboard.athletes[i].elevation);
+							polka = i;
+						}
+					}
+
+					leaderboard.athletes[yellow].jersey = 'images/yellow.png';
+					leaderboard.athletes[polka].jersey = 'images/polkadot.png';
 				}
 
 				res.stageLeaderboards.sort(function(a,b) {
@@ -142,6 +162,27 @@ function getTotalDistance(req, res, next) {
 		client.query('SELECT CONCAT(ath.firstname,\' \', SUBSTR(ath.lastname,1,1)) as name, ath.country, COUNT(act.id) as activities, SUM(act.total_elevation_gain) as elevation, COALESCE(ROUND(SUM(act.distance)/1000,1),0) as distance FROM strava.athletes ath LEFT JOIN strava.activities act ON ath.id = act.athlete_id WHERE (act.start_date >= $1 AND act.start_date <= $2) OR act IS NULL GROUP BY ath.id ORDER BY distance DESC ', [res.event.first_date, res.event.last_date], function (error, results) {
 				if (error) throw error;
 				res.athletes = results.rows;
+
+				// Calculate jerseys
+				var yellow=-1, maxdist=0.0, polka=-1, maxelev=0;
+				for (i=0;i<results.rows.length;i++)
+				{
+					results.rows[i].jersey='';
+					if (results.rows[i].distance > maxdist)
+					{
+						maxdist = parseFloat(results.rows[i].distance);
+						yellow = i;
+					}
+					if (results.rows[i].elevation > maxelev)
+					{
+						maxelev = parseFloat(results.rows[i].elevation);
+						polka = i;
+					}
+				}
+
+				results.rows[yellow].jersey = 'images/yellow.png';
+				results.rows[polka].jersey = 'images/polkadot.png';
+				
 				next();
 			});
 	}
