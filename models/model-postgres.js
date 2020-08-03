@@ -61,7 +61,7 @@ function getTotalDistance(req, res, next) {
 			
 				// calculate current stage
 				res.stage = 0; 
-				while(res.stages[res.stage].startdistance < res.distance)
+				while(res.stage < res.stages.length && res.stages[res.stage].startdistance < res.distance)
 					res.stage++;
 
 				next();
