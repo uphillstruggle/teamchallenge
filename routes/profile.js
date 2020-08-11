@@ -31,7 +31,8 @@ router.get('/', checkSignIn,
 			activity_types: res.activity_types ,
 			title: res.event.shortname,
 			description: res.event.description,
-			shareimage: res.event.shareimage
+			shareimage: res.event.shareimage,
+			firebase_config: res.event.firebase_config,
 		});
 	}
 );

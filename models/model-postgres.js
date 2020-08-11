@@ -26,6 +26,7 @@ client.connect();
 			res.event.description = results.rows[0].description;
 			res.event.shareimage = results.rows[0].shareimage;
 			res.event.distance_goal = results.rows[0].distance_goal;
+			res.event.firebase_config = results.rows[0].firebase_config;
 			res.event.first_date = moment(results.rows[0].first_date).format('LL');
 			res.event.last_date = moment(results.rows[0].last_date).format('LL');
 			res.event.first_date_ts = moment(results.rows[0].first_date).format('X');

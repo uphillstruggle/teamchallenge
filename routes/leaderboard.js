@@ -28,6 +28,7 @@ router.get('/',
 			title: res.event.shortname,
 			shareimage:res.stages[res.stage-1].image,
 			titleimage:res.stages[res.stage-1].image,
+			firebase_config: res.event.firebase_config
 		});
 	}
 );
