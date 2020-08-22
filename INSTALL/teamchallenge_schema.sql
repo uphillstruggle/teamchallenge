@@ -156,6 +156,16 @@ CREATE TABLE teamchallenge.webhook_messages (
     http_type character varying(45)
 );
 
+CREATE TABLE teamchallenge.session (
+  "sid" varchar NOT NULL COLLATE "default",
+	"sess" json NOT NULL,
+	"expire" timestamp(6) NOT NULL
+)
+WITH (OIDS=FALSE);
+
+ALTER TABLE teamchallenge.session ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
+
+CREATE INDEX "IDX_session_expire" ON teamchallenge.session ("expire");
 
 --
 -- TOC entry 210 (class 1259 OID 5857737)
