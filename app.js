@@ -17,8 +17,6 @@ var webhookRouter = require('./routes/webhook');
 
 var passport = require('passport');
 var stravaStrategy = require('passport-strava').Strategy;
-var session = require("express-session");
-var session_secret = process.env['SESSION_SECRET'];
 
 
 passport.use(new stravaStrategy({
@@ -59,8 +57,22 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
-// Cookie initialisation - TODO better security
-app.use(require('express-session')({ secret: session_secret, resave: true, saveUninitialized: true }));
+
+var session = require("express-session");
+var session_store = new (require('connect-pg-simple')(session))
+		({ 
+			tableName: db.getSessionTable(),
+			schemaName: db.getSessionSchema(),
+			conString: process.env['DATABASE_URL']
+		});
+
+app.use(session({
+	store: session_store,
+	secret: process.env['SESSION_SECRET'],
+	resave: false,
+	saveUninitialized: false,
+	cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());

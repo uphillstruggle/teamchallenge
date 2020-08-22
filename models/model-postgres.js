@@ -349,7 +349,7 @@ function getTotalDistance(req, res, next) {
 		let updates = req.body['updates'];
 
 		// insert query contents into DB
-		var sql = format('INSERT INTO webhook_messages (aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (%L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates);
+		var sql = format('INSERT INTO teamchallenge.webhook_messages (aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (%L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates);
 		console.log("Executing sql: ", sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
@@ -357,5 +357,15 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog};
+function getSessionSchema()
+{
+	return 'teamchallenge';
+}
+
+function getSessionTable()
+{
+	return 'session';
+}
+
+module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
 
