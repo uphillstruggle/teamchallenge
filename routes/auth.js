@@ -17,7 +17,7 @@ router.get('/success', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next) {
-	// TODO: Logout
+	req.logout();
 	res.redirect('/');
 });
 
