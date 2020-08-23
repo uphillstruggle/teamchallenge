@@ -339,7 +339,6 @@ function getTotalDistance(req, res, next) {
 
 	function insertWebhookLog(req,res,next)
 	{
-		console.log("insertWebhookLog: ", sql);
 		let aspect_type = req.body['aspect_type'];
 		let event_time = req.body['event_time'];
 		let object_id = req.body['object_id'];
