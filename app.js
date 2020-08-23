@@ -30,6 +30,7 @@ passport.use(new stravaStrategy({
 		// store refresh and access token in profile 
 		profile.accessToken=accessToken;
 		profile.refreshToken=refreshToken;
+		profile.tokenRefreshTime = Date.now();
 		return cb(null, profile);
     }
   ));

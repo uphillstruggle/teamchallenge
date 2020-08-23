@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 function checkSignIn(req, res, next){
-   if(req.session.passport && req.session.passport.user){
+   if(req.session.passport && req.session.passport.user && (Date.now() - req.session.passport.user.tokenRefreshTime <= 3600)){
       next();
    } else {
 	   res.redirect("/auth/login");
