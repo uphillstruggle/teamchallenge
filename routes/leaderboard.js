@@ -19,6 +19,7 @@ router.get('/',
 	}, 
 	function(req, res, next){
 		res.render('leaderboard', { 
+			pagename: 'leaderboard',
 			event: res.event,
 			stage: res.stage,
 			stages: res.stages,

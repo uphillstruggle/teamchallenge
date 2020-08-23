@@ -22,6 +22,7 @@ router.get('/',
 	}, 
 	function(req, res, next){
 		res.render('index', { 
+			pagename: 'home',
 			event: res.event, 
 			distance: res.distance,
 			activity_types: res.activity_types,

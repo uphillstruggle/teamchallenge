@@ -25,6 +25,7 @@ router.get('/', checkSignIn,
 	function(req, res, next){
 
 		res.render('profile', {
+			pagename: 'profile',
 			activities: res.activities,
 			user: req.user,
 			event: res.event, 
