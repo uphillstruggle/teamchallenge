@@ -284,6 +284,9 @@ CREATE INDEX idx_16393_event_id_idx ON teamchallenge.activity_types_events USING
 
 CREATE INDEX idx_16393_event_type_id_idx ON teamchallenge.activity_types_events USING btree (activity_type_id);
 
+ALTER TABLE teamchallenge.activity_types_events
+    ADD CONSTRAINT con_ae UNIQUE (event_id, activity_type_id);
+
 
 --
 -- TOC entry 3759 (class 1259 OID 6031380)
