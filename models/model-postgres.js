@@ -238,7 +238,6 @@ function getTotalDistance(req, res, next) {
 				actType.id=item.id;
 				actType.allowed=item.selected ? true: false;
 				res.activity_types.push(actType); }); 
-			console.log(res.activity_types);
 		  next();
 		});
 	};
@@ -316,7 +315,6 @@ function getTotalDistance(req, res, next) {
 		client.query('SELECT refresh_token from teamchallenge.athletes WHERE id = $1', [athlete_id], (error, results) => {
 			if (error) throw error;
 			req.refreshToken = results.rows[0].refresh_token;
-			console.log("Athlete ID, refresh token: ", athlete_id, req.refreshToken);
 			next();
 		});
 	};
@@ -360,7 +358,6 @@ function getTotalDistance(req, res, next) {
 
 			// insert or update activity
 			var sql = format('INSERT into teamchallenge.activities (id, athlete_id,name, distance, total_elevation_gain, type, start_date) values (%L,%L,%L,%L,%L,%L,%L) ON CONFLICT (id) DO UPDATE set athlete_id = EXCLUDED.athlete_id, name=EXCLUDED.name, distance=EXCLUDED.distance, total_elevation_gain=EXCLUDED.total_elevation_gain, type=EXCLUDED.type, start_date=EXCLUDED.start_date', res.activity.id, res.activity.athlete.id, res.activity.name, res.activity.distance, res.activity.total_elevation_gain, res.activity.type, moment(res.activity.start_date).format('YYYY-MM-DD'));
-			console.log("Executing sql: ", sql);
 			client.query(sql, function (error, results) {
 					if (error) throw error;
 					console.log("Successfully updated activity ",res.activity.id);
