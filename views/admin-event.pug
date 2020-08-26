@@ -1,0 +1,82 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Events Admin - #{event.name}
+		form(action='/admin/event', method='post')
+			table.table
+				tbody
+					tr
+						td(style='width:200px') ID
+						td #{event.id}
+							input(name='id', value=event.id, type='hidden')
+					tr
+						td Name
+						td 
+							input(name='name', value=event.name, type='text')
+					tr
+						td Description
+						td 
+							textarea(name="description", cols="40", rows="5").form-control=event.description
+					tr
+						td Short name
+						td 
+							input(name='shortname', value=event.shortname, type='text')
+					tr
+						td Share Image
+						td 
+							input(name='shareimage', value=event.shareimage, type='text')
+					tr
+						td Distance goal
+						td 
+							input(name='distance_goal', value=event.distance_goal, type='text')
+					tr
+						td First Date
+						td 
+							input(name='first_date', value=event.first_date, type='date')
+					tr
+						td Last Date
+						td 
+							input(name='last_date', value=event.last_date, type='date')
+					tr
+						td Firebase config
+						td 
+							textarea(name="firebase_config", cols="40", rows="5").form-control=event.firebase_config
+					tr
+						td Activity types
+						td
+							each item in activity_types
+								p
+
+								input(name='activity_type_all', value=item.id, type='hidden')
+								input(name='activity_type_selected', value=item.id, type='checkbox', checked=item.allowed )
+								| 
+								| #{item.name}
+
+			input(type='submit')
+		p
+			table.table
+				thead
+					tr
+						th Stage
+						th Name
+						th Image
+						th Start Distance km
+						th Elevation m
+						th Distance km
+				tbody
+					each row in stages
+						tr
+							td #{row.stage}
+							td #{row.name}
+							td #{row.image}
+							td #{row.startdistance}
+							td #{row.elevation}
+							td #{row.distance}
+
+		include footer.pug

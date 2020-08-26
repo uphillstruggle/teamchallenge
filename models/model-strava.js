@@ -94,8 +94,12 @@ function fetchAndStoreActivities(req, res, next)
 				// filter out the activities of the right type for this event
 				var qualifying_activities = new Array();
 				payload.forEach(function(activity) { 
-						if (res.activity_types.includes(activity.type)){
-							qualifying_activities.push(activity);
+						for (var i=0; i<res.activity_types.length; i++)
+						{
+							if (res.activity_types[i].name === activity.type 
+								&& res.activity_types[i].allowed){
+								qualifying_activities.push(activity);
+							}
 						}
 					});
 				

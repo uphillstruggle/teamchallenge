@@ -13,6 +13,7 @@ var leaderboardRouter = require('./routes/leaderboard');
 var profileRouter = require('./routes/profile');
 var authRouter = require('./routes/auth');
 var webhookRouter = require('./routes/webhook');
+var adminRouter = require('./routes/admin');
 
 
 var passport = require('passport');
@@ -79,6 +80,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(bodyParser.json({strict: false}));
+app.use('/admin', adminRouter); 
 app.use('/leaderboard', leaderboardRouter); 
 app.use('/profile', profileRouter); 
 app.use('/auth', authRouter); 

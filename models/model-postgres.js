@@ -11,11 +11,19 @@ const client = new Client({
 
 client.connect();
 
-	var event_id = process.env['EVENT_ID'];
+
+	function getEventList(req, res, next)
+	{
+		client.query('SELECT * from teamchallenge.events ORDER BY id ASC', [], (error, results) => {
+			if (error) throw error;
+			res.events = results.rows;
+			next();
+		});
+	}
 
 	function getEvent(req, res, next)
 	{
-		client.query('SELECT * from teamchallenge.events WHERE id = $1', [event_id], (error, results) => {
+		client.query('SELECT * from teamchallenge.events WHERE id = $1', [req.event_id], (error, results) => {
 			if (error) throw error;
 			//
 			// prepare event data for template output
@@ -27,10 +35,28 @@ client.connect();
 			res.event.shareimage = results.rows[0].shareimage;
 			res.event.distance_goal = results.rows[0].distance_goal;
 			res.event.firebase_config = results.rows[0].firebase_config;
-			res.event.first_date = moment(results.rows[0].first_date).format('LL');
-			res.event.last_date = moment(results.rows[0].last_date).format('LL');
+			res.event.first_date = moment(results.rows[0].first_date).format('YYYY-MM-DD');
+			res.event.last_date = moment(results.rows[0].last_date).format('YYYY-MM-DD');
 			res.event.first_date_ts = moment(results.rows[0].first_date).format('X');
 			res.event.last_date_ts = moment(results.rows[0].last_date).format('X');
+			next();
+		});
+	}
+
+	function updateEvent(req, res, next)
+	{
+		client.query('UPDATE teamchallenge.events SET name=$2, description=$3, shortname=$4, shareimage=$5, distance_goal=$6, first_date=$7, last_date=$8, firebase_config=$9 WHERE id = $1', [
+			req.body.id, 
+			req.body.name, 
+			req.body.description,
+			req.body.shortname,
+			req.body.shareimage,
+			req.body.distance_goal,
+			req.body.first_date,
+			req.body.last_date,
+			req.body.firebase_config
+		], (error, results) => {
+			if (error) throw error;
 			next();
 		});
 	}
@@ -201,14 +227,42 @@ function getTotalDistance(req, res, next) {
 
 	function getActivityTypes(req, res, next)
 	{
-		client.query('SELECT act.strava_name FROM teamchallenge.activity_types act, teamchallenge.activity_types_events ae, teamchallenge.events e WHERE ae.event_id = e.id and ae.activity_type_id = act.id and e.id = $1', [event_id], function (error, results) {
+		client.query('SELECT act.strava_name, act.id, ae.activity_type_id as selected FROM teamchallenge.activity_types act LEFT JOIN teamchallenge.activity_types_events ae ON act.id = ae.activity_type_id AND ae.event_id = $1', [req.event_id], function (error, results) {
 			if (error) throw error;
 
 			// extract friendly name of activities from results and prepare for template output
 			res.activity_types = new Array();
-			results.rows.forEach(function(item) { res.activity_types.push(item.strava_name); }); 
+			results.rows.forEach(function(item) { 
+				var actType = new Object();
+				actType.name=item.strava_name;
+				actType.id=item.id;
+				actType.allowed=item.selected ? true: false;
+				res.activity_types.push(actType); }); 
+			console.log(res.activity_types);
 		  next();
 		});
+	};
+
+	function updateActivityTypes(req, res, next)
+	{
+		var sql = '';
+		for (var i=0; i<req.body.activity_type_all.length; i++)
+		{
+			if (req.body.activity_type_selected.indexOf(req.body.activity_type_all[i]) == -1)
+			{
+				// where type is not selected, make sure it is deleted from the table
+				sql+='DELETE FROM teamchallenge.activity_types_events WHERE event_id = '+ req.body.id + ' AND activity_type_id = ' + req.body.activity_type_all[i] + '; ';
+			}
+			else
+			{	
+				// where type is selected, insert it into the table avoiding duplicates
+				sql+='INSERT INTO teamchallenge.activity_types_events (event_id, activity_type_id) VALUES (' + req.body.id + ',' + req.body.activity_type_all[i] + ') ON CONFLICT ON CONSTRAINT con_ae DO NOTHING; ';
+			}
+		}
+		client.query(sql, function (error, results) {
+				if (error) throw error;
+				next();
+			});
 	};
 
 	function updateActivities(activities)
@@ -366,5 +420,5 @@ function getSessionTable()
 	return 'session';
 }
 
-module.exports = { getEvent, getActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
+module.exports = { getEventList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
 

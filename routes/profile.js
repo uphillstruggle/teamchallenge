@@ -14,6 +14,7 @@ router.get('/', checkSignIn,
 		req.app.locals.db.updateAthlete(req, res, next);
 	}, 
 	function(req, res, next){
+		req.event_id = process.env['EVENT_ID'];
 		req.app.locals.db.getEvent(req, res, next);
 	}, 
 	function(req, res, next){

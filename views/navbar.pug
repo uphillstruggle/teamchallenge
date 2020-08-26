@@ -8,7 +8,7 @@ block navbar
 					span.icon-bar
 					span.icon-bar
 					span.icon-bar
-				a.navbar-brand(href='#') #{event.shortname}
+				a.navbar-brand(href='#') TeamChallenge
 			#navbar.navbar-collapse.collapse
 				ul.nav.navbar-nav
 					if (pagename==='home')
@@ -43,3 +43,15 @@ block navbar
 					else
 						li
 							a(href='/profile') Login
+					if (user && user.id == process.env.OWNER_ID)
+						li.dropdown
+							a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-expanded='false')
+								|  Admin
+								span.caret
+							ul.dropdown-menu(role='menu')
+								if (pagename==='admin-eventlist')
+									li.active
+										a(href='/admin/events') Events
+								else
+									li
+										a(href='/admin/events') Events

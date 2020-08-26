@@ -9,7 +9,10 @@ block body
 	.container.theme-showcase(role='main')
 		h1 My activities
 		p Thanks for joining the challenge! These activities have been added to the challenge total:
-		p Qualifying activities from #{event.first_date} to #{event.last_date} of types #{activity_types}
+		p Qualifying activities from #{event.first_date} to #{event.last_date} of types: 
+		each item in activity_types
+			if (item.allowed)
+				| #{item.name} 
 		p
 			+table(["#","Name","type","Date","Distance"],activities)
 

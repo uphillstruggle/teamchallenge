@@ -23,7 +23,10 @@ block body
 				strong Activity date range 
 				|	#{event.first_date} to #{event.last_date} - 
 				strong Activity types: 
-				| #{activity_types} 
+
+				each item in activity_types
+					if (item.allowed)
+						| #{item.name} 
 
 		h2 Progress Overall #{ Math.trunc(distance*1000 / event.distance_goal)/10} %
 		table.table

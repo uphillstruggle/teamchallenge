@@ -1,0 +1,20 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Events Admin
+		table.table
+			tbody
+				each event in events
+					tr
+						td #{event.id}
+						td 
+							a(href='/admin/event/' + event.id) #{event.name}
+						td #{event.description}
+
+		include footer.pug
