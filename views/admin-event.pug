@@ -73,7 +73,8 @@ block body
 					each row in stages
 						tr
 							td #{row.stage}
-							td #{row.name}
+							td 
+								a(href='/admin/stage/'+row.id) #{row.name}
 							td #{row.image}
 							td #{row.startdistance}
 							td #{row.elevation}

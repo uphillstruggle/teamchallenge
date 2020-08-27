@@ -1,0 +1,50 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Events Admin - Stage #{stage.name}
+		form(action='/admin/stage', method='post')
+			table.table
+				tbody
+					tr
+						td(style='width:200px') ID
+						td #{stage.id}
+							input(name='id', value=stage.id, type='hidden')
+					tr
+						td(style='width:200px') Event ID
+						td #{stage.eventid}
+							input(name='eventid', value=stage.eventid, type='hidden')
+					tr
+						td Name
+						td 
+							input(name='name', value=stage.name, type='text')
+					tr
+						td Number
+						td 
+							input(name='stage', value=stage.stage, type='number')
+					tr
+						td Image
+						td 
+							input(name='image', value=stage.image, type='text')
+					tr
+						td Elevation
+						td 
+							input(name='elevation', value=stage.elevation, type='number')
+					tr
+						td Distance
+						td 
+							input(name='distance', value=stage.distance, type='number')
+					tr
+						td Start distance
+						td 
+							input(name='startdistance', value=stage.startdistance, type='number')
+			p
+				input(type='submit')
+
+
+		include footer.pug

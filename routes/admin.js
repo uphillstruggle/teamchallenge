@@ -40,6 +40,29 @@ router.get('/event/:eventid',
 	}
 );
 
+router.get('/stage/:stageid',   
+	function(req, res, next){
+		req.app.locals.db.getStage(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('admin-stage', { 
+			pagename: 'admin-stage',
+			stage: res.stage,
+			user: req.user,
+			title: 'Admin: Stage',
+		});
+	}
+);
+
+router.post('/stage',   
+	function(req, res, next){
+		req.app.locals.db.updateStage(req, res, next);
+	}, 
+	function(req, res, next){
+		res.redirect('/admin/event/' + req.body.eventid);
+	}
+);
+
 router.get('/events',   
 	function(req, res, next){
 		req.app.locals.db.getEventList(req, res, next);

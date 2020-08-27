@@ -95,6 +95,32 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
+	function getStage(req, res, next)
+	{
+		client.query('SELECT id, eventid, stage, distance, elevation, startdistance, name, image FROM teamchallenge.stages WHERE id = $1', [req.params.stageid], function (error, results) {
+				if (error) throw error;
+				res.stage = results.rows[0];
+				next();
+			});
+	}
+
+	function updateStage(req, res, next)
+	{
+		console.log(req.body);
+		client.query('UPDATE teamchallenge.stages SET name=$2, stage=$3, image=$4, distance=$5, elevation=$6, startdistance=$7 WHERE id = $1', [
+			req.body.id, 
+			req.body.name, 
+			req.body.stage,
+			req.body.image,
+			req.body.distance,
+			req.body.elevation,
+			req.body.startdistance
+		], (error, results) => {
+			if (error) throw error;
+			next();
+		});
+	}
+
 	function getAthletesAllStages(req, res, next)
 	{
 		// get all activities without grouping and don't count 
@@ -417,5 +443,5 @@ function getSessionTable()
 	return 'session';
 }
 
-module.exports = { getEventList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
+module.exports = { getEventList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStage, updateStage, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
 
