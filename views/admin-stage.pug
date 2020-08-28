@@ -30,7 +30,9 @@ block body
 					tr
 						td Image
 						td 
-							input(name='image', value=stage.image, type='text')
+							input(type='file', id='file-input')
+							input(name='image',id='image-url',value=stage.image,type='hidden')
+							img(id='preview',src=stage.image,style='width:600px')
 					tr
 						td Elevation
 						td 
@@ -45,6 +47,7 @@ block body
 							input(name='startdistance', value=stage.startdistance, type='number')
 			p
 				input(type='submit')
+	script 
+		include aws-image-upload.js
 
-
-		include footer.pug
+	include footer.pug

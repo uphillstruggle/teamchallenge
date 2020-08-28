@@ -30,7 +30,9 @@ block body
 					tr
 						td Share Image
 						td 
-							input(name='shareimage', value=event.shareimage, type='text')
+							input(type='file', id='file-input')
+							input(name='shareimage', id='image-url',value=event.shareimage, type='hidden')
+							img(id='preview',src=event.shareimage,style='width:600px')
 					tr
 						td Distance goal
 						td 
@@ -83,5 +85,8 @@ block body
 							td #{row.startdistance}
 							td #{row.elevation}
 							td #{row.distance}
+
+		script 
+			include aws-image-upload.js
 
 		include footer.pug

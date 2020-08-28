@@ -7,7 +7,6 @@ var logger = require('morgan');
 var db = require("./models/model-postgres");
 var strava = require("./models/model-strava");
 
-
 var indexRouter = require('./routes/index');
 var leaderboardRouter = require('./routes/leaderboard');
 var profileRouter = require('./routes/profile');
