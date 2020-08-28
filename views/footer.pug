@@ -7,7 +7,7 @@ block footer
 	script.
 		var firebaseConfig = { !{firebase_config} }; 
 		firebase.initializeApp(firebaseConfig); 
-		firebase.analytics();
-
+		const analytics = firebase.analytics();
+		analytics.logEvent('tc_page_view', { page_name: '#{pagename}' });
 
 
