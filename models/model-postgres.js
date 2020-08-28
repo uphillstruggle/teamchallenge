@@ -35,6 +35,7 @@ client.connect();
 			res.event.shareimage = results.rows[0].shareimage;
 			res.event.distance_goal = results.rows[0].distance_goal;
 			res.event.firebase_config = results.rows[0].firebase_config;
+			res.event.firebase_config2 = results.rows[0].firebase_config2;
 			res.event.first_date = moment(results.rows[0].first_date).format('YYYY-MM-DD');
 			res.event.last_date = moment(results.rows[0].last_date).format('YYYY-MM-DD');
 			res.event.first_date_ts = moment(results.rows[0].first_date).format('X');
@@ -45,7 +46,7 @@ client.connect();
 
 	function updateEvent(req, res, next)
 	{
-		client.query('UPDATE teamchallenge.events SET name=$2, description=$3, shortname=$4, shareimage=$5, distance_goal=$6, first_date=$7, last_date=$8, firebase_config=$9 WHERE id = $1', [
+		client.query('UPDATE teamchallenge.events SET name=$2, description=$3, shortname=$4, shareimage=$5, distance_goal=$6, first_date=$7, last_date=$8, firebase_config=$9, firebase_config2=$10 WHERE id = $1', [
 			req.body.id, 
 			req.body.name, 
 			req.body.description,
@@ -54,7 +55,8 @@ client.connect();
 			req.body.distance_goal,
 			req.body.first_date,
 			req.body.last_date,
-			req.body.firebase_config
+			req.body.firebase_config,
+			req.body.firebase_config2
 		], (error, results) => {
 			if (error) throw error;
 			next();

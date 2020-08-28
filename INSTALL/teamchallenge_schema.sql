@@ -105,7 +105,8 @@ CREATE TABLE teamchallenge.events (
     last_date timestamp with time zone,
     shortname character varying(45),
     shareimage character varying(255),
-    firebase_config character varying
+    firebase_config character varying,
+    firebase_config2 character varying
 );
 
 
