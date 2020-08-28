@@ -13,4 +13,5 @@ block footer
 	if (user)
 		script. 
 			analytics.setUserId('#{user.id}'); 
+			analytics.setUserProperties({ premium: '#{user._json.premium}', summit: '#{user._json.summit}'}); 
 
