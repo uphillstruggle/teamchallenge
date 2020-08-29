@@ -7,6 +7,10 @@ router.get('/',
 		req.app.locals.db.getEvent(req, res, next);
 	}, 
 	function(req, res, next){
+		req.params.charityid=1;
+		req.app.locals.db.getCharity(req, res, next);
+	}, 
+	function(req, res, next){
 		req.app.locals.db.getTotalDistance(req, res, next);
 	}, 
 	function(req, res, next){
@@ -34,8 +38,10 @@ router.get('/',
 			user: req.user,
 			title: res.event.shortname,
 			description: res.event.description,
-			shareimage:res.stages[res.stage-1].image,
-			titleimage:res.stages[res.stage-1].image,
+			shareimage:res.event.shareimage,
+			stage_image:res.stages[res.stage-1].image,
+			event_image:res.event.shareimage,
+			charity_image:res.charity.banner_image,
 			firebase_config: res.event.firebase_config,
 			firebase_config2: res.event.firebase_config2,
 		});
