@@ -21,6 +21,24 @@ client.connect();
 		});
 	}
 
+	function getTeamList(req, res, next)
+	{
+		client.query('SELECT * from teamchallenge.teams ORDER BY id ASC', [], (error, results) => {
+			if (error) throw error;
+			res.teams = results.rows;
+			next();
+		});
+	}
+
+	function getCharityList(req, res, next)
+	{
+		client.query('SELECT * from teamchallenge.charities ORDER BY id ASC', [], (error, results) => {
+			if (error) throw error;
+			res.charities = results.rows;
+			next();
+		});
+	}
+
 	function getEvent(req, res, next)
 	{
 		client.query('SELECT * from teamchallenge.events WHERE id = $1', [req.event_id], (error, results) => {
@@ -445,5 +463,5 @@ function getSessionTable()
 	return 'session';
 }
 
-module.exports = { getEventList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStage, updateStage, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
+module.exports = { getEventList, getTeamList, getCharityList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStage, updateStage, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
 

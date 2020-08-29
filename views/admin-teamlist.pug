@@ -1,0 +1,19 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Teams Admin
+		table.table
+			tbody
+				each team in teams
+					tr
+						td #{team.id}
+						td 
+							a(href='/admin/team/' + team.id) #{team.name}
+
+		include footer.pug

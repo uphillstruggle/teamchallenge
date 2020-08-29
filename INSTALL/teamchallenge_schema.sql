@@ -75,6 +75,7 @@ CREATE TABLE teamchallenge.activity_types_events (
 
 CREATE TABLE teamchallenge.athletes (
     id bigint NOT NULL,
+    teamid bigint,
     username text,
     firstname text,
     lastname text,
@@ -167,6 +168,22 @@ WITH (OIDS=FALSE);
 ALTER TABLE teamchallenge.session ADD CONSTRAINT "session_pkey" PRIMARY KEY ("sid") NOT DEFERRABLE INITIALLY IMMEDIATE;
 
 CREATE INDEX "IDX_session_expire" ON teamchallenge.session ("expire");
+
+CREATE TABLE teamchallenge.teams
+(
+    id integer NOT NULL,
+    name character varying COLLATE "default" NOT NULL,
+    charityid integer,
+    CONSTRAINT teams_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE teamchallenge.charities
+(
+    id integer NOT NULL,
+    name character varying COLLATE "default" NOT NULL,
+    banner_image character varying COLLATE "default",
+    CONSTRAINT charities_pkey PRIMARY KEY (id)
+);
 
 --
 -- TOC entry 210 (class 1259 OID 5857737)

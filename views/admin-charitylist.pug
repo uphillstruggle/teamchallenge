@@ -1,0 +1,19 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Charities Admin
+		table.table
+			tbody
+				each charity in charities
+					tr
+						td #{charity.id}
+						td 
+							a(href='/admin/charity/' + charity.id) #{charity.name}
+
+		include footer.pug

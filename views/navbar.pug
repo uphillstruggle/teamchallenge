@@ -55,3 +55,15 @@ block navbar
 								else
 									li
 										a(href='/admin/events') Events
+								if (pagename==='admin-teamlist')
+									li.active
+										a(href='/admin/teams') Teams
+								else
+									li
+										a(href='/admin/teams') Teams
+								if (pagename==='admin-charitylist')
+									li.active
+										a(href='/admin/charities') Charities
+								else
+									li
+										a(href='/admin/charities') Charities

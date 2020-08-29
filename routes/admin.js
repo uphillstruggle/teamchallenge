@@ -107,4 +107,32 @@ router.get('/events',
 	}
 );
 
+router.get('/teams',   
+	function(req, res, next){
+		req.app.locals.db.getTeamList(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('admin-teamlist', { 
+			pagename: 'admin-teamlist',
+			teams: res.teams,
+			user: req.user,
+			title: 'Admin: team list'
+		});
+	}
+);
+
+router.get('/charities',   
+	function(req, res, next){
+		req.app.locals.db.getCharityList(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('admin-charitylist', { 
+			pagename: 'admin-charitylist',
+			charities: res.charities,
+			user: req.user,
+			title: 'Admin: charity list'
+		});
+	}
+);
+
 module.exports = router;
