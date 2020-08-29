@@ -1,0 +1,29 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Events Admin - Team #{team.name}
+		form(action='/admin/team', method='post')
+			table.table
+				tbody
+					tr
+						td(style='width:200px') ID
+						td #{team.id}
+							input(name='id', value=team.id, type='hidden')
+					tr
+						td(style='width:200px') Charity ID
+						td #{team.charityid}
+							input(name='charityid', value=team.charityid, type='hidden')
+					tr
+						td Name
+						td 
+							input(name='name', value=team.name, type='text')
+			p
+				input(type='submit')
+
+		include footer.pug

@@ -1,0 +1,33 @@
+extends _bootstrap
+append styles
+	// Bootstrap theme
+	link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css")
+	// Custom styles for this template
+	link(href='/css/theme.css', rel='stylesheet')
+block body
+	include navbar.pug	
+	.container.theme-showcase(role='main')
+		h2 Events Admin - Charity #{charity.name}
+		form(action='/admin/charity', method='post')
+			table.table
+				tbody
+					tr
+						td(style='width:200px') ID
+						td #{charity.id}
+							input(name='id', value=charity.id, type='hidden')
+					tr
+						td Name
+						td 
+							input(name='name', value=charity.name, type='text')
+					tr
+						td Banner image
+						td 
+							input(type='file', id='file-input')
+							input(name='banner_image',id='image-url',value=charity.banner_image,type='hidden')
+							img(id='preview',src=charity.banner_image,style='width:600px')
+			p
+				input(type='submit')
+		script 
+			include aws-image-upload.js
+
+		include footer.pug

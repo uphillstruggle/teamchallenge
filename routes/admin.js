@@ -49,9 +49,6 @@ router.get('/event/:eventid',
 		req.app.locals.db.getEvent(req, res, next);
 	}, 
 	function(req, res, next){
-		req.app.locals.db.getTotalDistance(req, res, next);
-	}, 
-	function(req, res, next){
 		req.app.locals.db.getActivityTypes(req, res, next);
 	}, 
 	function(req, res, next){
@@ -121,6 +118,29 @@ router.get('/teams',
 	}
 );
 
+router.get('/team/:teamid',   
+	function(req, res, next){
+		req.app.locals.db.getTeam(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('admin-team', { 
+			pagename: 'admin-team',
+			team: res.team,
+			user: req.user,
+			title: 'Admin: Team',
+		});
+	}
+);
+
+router.post('/team',   
+	function(req, res, next){
+		req.app.locals.db.updateTeam(req, res, next);
+	}, 
+	function(req, res, next){
+		res.redirect('/admin/teams');
+	}
+);
+
 router.get('/charities',   
 	function(req, res, next){
 		req.app.locals.db.getCharityList(req, res, next);
@@ -132,6 +152,29 @@ router.get('/charities',
 			user: req.user,
 			title: 'Admin: charity list'
 		});
+	}
+);
+
+router.get('/charity/:charityid',   
+	function(req, res, next){
+		req.app.locals.db.getCharity(req, res, next);
+	}, 
+	function(req, res, next){
+		res.render('admin-charity', { 
+			pagename: 'admin-charity',
+			charity: res.charity,
+			user: req.user,
+			title: 'Admin: Charity',
+		});
+	}
+);
+
+router.post('/charity',   
+	function(req, res, next){
+		req.app.locals.db.updateCharity(req, res, next);
+	}, 
+	function(req, res, next){
+		res.redirect('/admin/charities');
 	}
 );
 

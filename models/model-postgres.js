@@ -30,11 +30,55 @@ client.connect();
 		});
 	}
 
+	function getTeam(req, res, next)
+	{
+		client.query('SELECT id, name, charityid FROM teamchallenge.teams WHERE id = $1', [req.params.teamid], function (error, results) {
+				if (error) throw error;
+				res.team = results.rows[0];
+				next();
+			});
+	}
+
+	function updateTeam(req, res, next)
+	{
+		console.log(req.body);
+		client.query('UPDATE teamchallenge.teams SET name=$2, charityid=$3 WHERE id = $1', [
+			req.body.id, 
+			req.body.name, 
+			req.body.charityid,
+		], (error, results) => {
+			if (error) throw error;
+			next();
+		});
+	}
+
 	function getCharityList(req, res, next)
 	{
 		client.query('SELECT * from teamchallenge.charities ORDER BY id ASC', [], (error, results) => {
 			if (error) throw error;
 			res.charities = results.rows;
+			next();
+		});
+	}
+
+	function getCharity(req, res, next)
+	{
+		client.query('SELECT id, name, banner_image FROM teamchallenge.charities WHERE id = $1', [req.params.charityid], function (error, results) {
+				if (error) throw error;
+				res.charity = results.rows[0];
+				next();
+			});
+	}
+
+	function updateCharity(req, res, next)
+	{
+		console.log(req.body);
+		client.query('UPDATE teamchallenge.charities SET name=$2, banner_image=$3 WHERE id = $1', [
+			req.body.id, 
+			req.body.name, 
+			req.body.banner_image,
+		], (error, results) => {
+			if (error) throw error;
 			next();
 		});
 	}
@@ -463,5 +507,31 @@ function getSessionTable()
 	return 'session';
 }
 
-module.exports = { getEventList, getTeamList, getCharityList, getEvent, updateEvent, getActivityTypes, updateActivityTypes, updateActivities, updateAthlete, getTotalDistance, getActivities, getStage, updateStage, getStages, getAthletes, getAthletesAllStages, processWebhook, lookupRefreshToken, insertWebhookLog,getSessionTable,getSessionSchema};
+module.exports = { 
+	getEventList, 
+	getEvent, 
+	updateEvent, 
+	getStages, 
+	getStage, 
+	updateStage, 
+	getTeamList, 
+	getTeam,
+	updateTeam,
+	getCharityList, 
+	getCharity,
+	updateCharity,
+	getActivityTypes, 
+	updateActivityTypes, 
+	updateActivities, 
+	updateAthlete, 
+	getTotalDistance, 
+	getActivities, 
+	getAthletes, 
+	getAthletesAllStages, 
+	processWebhook, 
+	lookupRefreshToken, 
+	insertWebhookLog,
+	getSessionTable,
+	getSessionSchema
+};
 
