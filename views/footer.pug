@@ -6,13 +6,9 @@ block footer
 	script(src='https://www.gstatic.com/firebasejs/7.17.2/firebase-analytics.js')
 	script.
 		var firebaseConfig = { !{firebase_config} }; 
-		var firebaseConfig2 = { !{firebase_config2} }; 
 		firebase.initializeApp(firebaseConfig); 
-		var secondary = firebase.initializeApp(firebaseConfig2, "Secondary"); 
 		const analytics = firebase.analytics();
-		const analytics2 = secondary.analytics();
 		analytics.logEvent('tc_page_view', { page_name: '#{pagename}' });
-		analytics2.logEvent('sc_page_view', { page_name: '#{pagename}' });
 		analytics.setCurrentScreen ('#{pagename}');
 	if (user)
 		script. 
