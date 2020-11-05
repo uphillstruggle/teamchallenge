@@ -12,13 +12,11 @@ block body
 			h1 #{event.name}
 			p
 				| #{event.description}
-				+carousel("main_carousel",[ {image:stage_image}, {image:event_image}, {image:charity_image} ])
+				+carousel("main_carousel",[ {image:stage_image}, {image:event_image}])
 
 			p
 			p
 				+a-btn-primary('/auth/login') Sign in with Strava
-				| 
-				+a-btn-danger('https://www.justgiving.com/fundraising/tour-de-monterosa') Donate to Blood Cancer UK
 			p
 				strong Activity date range 
 				|	#{event.first_date} to #{event.last_date} - 
