@@ -17,4 +17,6 @@ block body
 							a(href='/admin/event/' + event.id) #{event.name}
 						td #{event.description}
 
+		+a-btn-primary('/admin/event/new') New event
+
 		include footer.pug

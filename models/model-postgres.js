@@ -41,12 +41,17 @@ client.connect();
 
 	function updateTeam(req, res, next)
 	{
-		console.log(req.body);
-		client.query('UPDATE teamchallenge.teams SET name=$2, charityid=$3 WHERE id = $1', [
-			req.body.id, 
-			req.body.name, 
-			req.body.charityid,
-		], (error, results) => {
+		var sql;
+		if (req.body.id)
+		{
+			sql = format('UPDATE teamchallenge.teams SET name=%L, charityid=%L WHERE id = %L', req.body.name, req.body.charityid, req.body.id);
+		}
+		else
+		{
+			// id is autoincrement 
+			sql = format('INSERT INTO teamchallenge.teams (name, charityid) VALUES (%L, %L)', req.body.name, req.body.charityid);
+		}
+		client.query(sql, function (error, results) {
 			if (error) throw error;
 			next();
 		});
@@ -72,12 +77,17 @@ client.connect();
 
 	function updateCharity(req, res, next)
 	{
-		console.log(req.body);
-		client.query('UPDATE teamchallenge.charities SET name=$2, banner_image=$3 WHERE id = $1', [
-			req.body.id, 
-			req.body.name, 
-			req.body.banner_image,
-		], (error, results) => {
+		var sql;
+		if (req.body.id)
+		{
+			sql = format('UPDATE teamchallenge.charities SET name=%L, banner_image=%L WHERE id = %L', req.body.name, req.body.banner_image, req.body.id);
+		}
+		else
+		{
+			// id is autoincrement 
+			sql = format('INSERT INTO teamchallenge.charities (name, banner_image) VALUES (%L, %L)', req.body.name, req.body.banner_image);
+		}
+		client.query(sql, function(error, results) {
 			if (error) throw error;
 			next();
 		});
@@ -85,6 +95,7 @@ client.connect();
 
 	function getEvent(req, res, next)
 	{
+
 		client.query('SELECT * from teamchallenge.events WHERE id = $1', [req.event_id], (error, results) => {
 			if (error) throw error;
 			//
@@ -108,8 +119,10 @@ client.connect();
 
 	function updateEvent(req, res, next)
 	{
-		client.query('UPDATE teamchallenge.events SET name=$2, description=$3, shortname=$4, shareimage=$5, distance_goal=$6, first_date=$7, last_date=$8, firebase_config=$9, firebase_config2=$10 WHERE id = $1', [
-			req.body.id, 
+		var sql;
+		if (req.body.id)
+		{
+			sql = format('UPDATE teamchallenge.events SET name=%L, description=%L, shortname=%L, shareimage=%L, distance_goal=%L, first_date=%L, last_date=%L, firebase_config=%L, firebase_config2=%L WHERE id = %L', 
 			req.body.name, 
 			req.body.description,
 			req.body.shortname,
@@ -118,14 +131,37 @@ client.connect();
 			req.body.first_date,
 			req.body.last_date,
 			req.body.firebase_config,
-			req.body.firebase_config2
-		], (error, results) => {
+			req.body.firebase_config2,
+			req.body.id);
+		}
+		else
+		{
+			// id is autoincrement 
+			sql = format('INSERT INTO teamchallenge.events (name, description, shortname, shareimage, distance_goal, first_date, last_date, firebase_config, firebase_config2) VALUES (%L, %L, %L, %L, %L, %L, %L, %L, %L)',
+			req.body.name, 
+			req.body.description,
+			req.body.shortname,
+			req.body.shareimage,
+			req.body.distance_goal,
+			req.body.first_date,
+			req.body.last_date,
+			req.body.firebase_config,
+			req.body.firebase_config2);
+		}
+		client.query(sql, function (error, results) {
 			if (error) throw error;
 			next();
 		});
 	}
 
 
+function getLastEventID(req, res, next) {
+		client.query('SELECT last_value FROM teamchallenge.events_id_seq', [], function (error, results) {
+				if (error) throw error;
+				req.body.id = results.rows[0].last_value;
+				next();
+			});
+}
 
 function getTotalDistance(req, res, next) {
 		client.query('SELECT SUM(distance) as distance FROM teamchallenge.activities WHERE start_date >= $1 AND start_date <= $2', [res.event.first_date, res.event.last_date], function (error, results) {
@@ -170,7 +206,6 @@ function getTotalDistance(req, res, next) {
 
 	function updateStage(req, res, next)
 	{
-		console.log(req.body);
 		client.query('UPDATE teamchallenge.stages SET name=$2, stage=$3, image=$4, distance=$5, elevation=$6, startdistance=$7 WHERE id = $1', [
 			req.body.id, 
 			req.body.name, 
@@ -315,7 +350,7 @@ function getTotalDistance(req, res, next) {
 			});
 	}
 
-	function getActivityTypes(req, res, next)
+	function getActivityTypesForEvent(req, res, next)
 	{
 		client.query('SELECT act.strava_name, act.id, ae.activity_type_id as selected FROM teamchallenge.activity_types act LEFT JOIN teamchallenge.activity_types_events ae ON act.id = ae.activity_type_id AND ae.event_id = $1', [req.event_id], function (error, results) {
 			if (error) throw error;
@@ -327,6 +362,24 @@ function getTotalDistance(req, res, next) {
 				actType.name=item.strava_name;
 				actType.id=item.id;
 				actType.allowed=item.selected ? true: false;
+				res.activity_types.push(actType); }); 
+			console.log(res.activity_types);
+		  next();
+		});
+	};
+
+	function getActivityTypes(req, res, next)
+	{
+		client.query('SELECT act.strava_name, act.id FROM teamchallenge.activity_types act', function (error, results) {
+			if (error) throw error;
+
+			// extract friendly name of activities from results and prepare for template output
+			res.activity_types = new Array();
+			results.rows.forEach(function(item) { 
+				var actType = new Object();
+				actType.name=item.strava_name;
+				actType.id=item.id;
+				actType.allowed=false;
 				res.activity_types.push(actType); }); 
 		  next();
 		});
@@ -348,6 +401,7 @@ function getTotalDistance(req, res, next) {
 				sql+='INSERT INTO teamchallenge.activity_types_events (event_id, activity_type_id) VALUES (' + req.body.id + ',' + req.body.activity_type_all[i] + ') ON CONFLICT ON CONSTRAINT con_ae DO NOTHING; ';
 			}
 		}
+		console.log(sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
 				next();
@@ -411,10 +465,8 @@ function getTotalDistance(req, res, next) {
 
 	function processWebhook(req,res,next)
 	{
-		console.log("processWebhook");
 		if (req.webhook_aspect_type === 'delete')
 		{
-			console.log("delete request");
 			// delete activity or athlete
 			if (req.webhook_object_type === 'activity')
 			{
@@ -437,7 +489,6 @@ function getTotalDistance(req, res, next) {
 
 		if (req.webhook_object_type === 'activity')
 		{
-			console.log("activity request");
 			// check activity is one of the right type
 			if (res.activity_types.indexOf(res.activity.type) == -1) {
 				// ignore this activity
@@ -469,7 +520,6 @@ function getTotalDistance(req, res, next) {
 				res.accessToken,
 				res.refreshToken,
 				res.athlete.id);
-			console.log("Executing sql: ", sql);
 			client.query(sql, function (error, results) {
 					if (error) throw error;
 					console.log("Successfully updated athlete ",res.athlete.id);
@@ -490,7 +540,6 @@ function getTotalDistance(req, res, next) {
 
 		// insert query contents into DB
 		var sql = format('INSERT INTO teamchallenge.webhook_messages (aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates, received_at, http_type) VALUES (%L, %L, %L, %L, %L, %L, %L, NOW(), \'POST\')', aspect_type, event_time, object_id, object_type, owner_id, subscription_id, updates);
-		console.log("Executing sql: ", sql);
 		client.query(sql, function (error, results) {
 				if (error) throw error;
 				next();
@@ -511,6 +560,7 @@ module.exports = {
 	getEventList, 
 	getEvent, 
 	updateEvent, 
+	getLastEventID,
 	getStages, 
 	getStage, 
 	updateStage, 
@@ -521,6 +571,7 @@ module.exports = {
 	getCharity,
 	updateCharity,
 	getActivityTypes, 
+	getActivityTypesForEvent, 
 	updateActivityTypes, 
 	updateActivities, 
 	updateAthlete, 

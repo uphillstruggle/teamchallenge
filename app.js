@@ -18,7 +18,6 @@ var adminRouter = require('./routes/admin');
 var passport = require('passport');
 var stravaStrategy = require('passport-strava').Strategy;
 
-
 passport.use(new stravaStrategy({
     clientID: process.env['STRAVA_CLIENT_ID'],
     clientSecret: process.env['STRAVA_CLIENT_SECRET'],

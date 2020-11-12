@@ -18,7 +18,7 @@ router.get('/', checkSignIn,
 		req.app.locals.db.getEvent(req, res, next);
 	}, 
 	function(req, res, next){
-		req.app.locals.db.getActivityTypes(req, res, next);
+		req.app.locals.db.getActivityTypesForEvent(req, res, next);
 	}, 
 	function(req, res, next){
 		req.app.locals.strava.fetchAndStoreActivities(req, res, next);

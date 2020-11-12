@@ -91,7 +91,10 @@ function fetchAndStoreActivities(req, res, next)
 		strava.athlete.listActivities({ before: res.event.last_date_ts, after: res.event.first_date_ts},function(err,payload,limits) {
 			if(!err) {
 				
+				console.log(payload);
+
 				// filter out the activities of the right type for this event
+				console.log(res.activity_types);
 				var qualifying_activities = new Array();
 				payload.forEach(function(activity) { 
 						for (var i=0; i<res.activity_types.length; i++)
@@ -99,6 +102,7 @@ function fetchAndStoreActivities(req, res, next)
 							if (res.activity_types[i].name === activity.type 
 								&& res.activity_types[i].allowed){
 								qualifying_activities.push(activity);
+								console.log("Added activity: ", activity);
 							}
 						}
 					});

@@ -36,6 +36,9 @@ router.post('/event',
 		req.app.locals.db.updateEvent(req, res, next);
 	}, 
 	function(req, res, next){
+		req.app.locals.db.getLastEventID(req, res, next);
+	}, 
+	function(req, res, next){
 		req.app.locals.db.updateActivityTypes(req, res, next);
 	}, 
 	function(req, res, next){
@@ -45,14 +48,37 @@ router.post('/event',
 
 router.get('/event/:eventid',   
 	function(req, res, next){
-		req.event_id = req.params.eventid;
-		req.app.locals.db.getEvent(req, res, next);
+		if (req.params.eventid === 'new')
+		{
+			res.event = new Object();
+			next();
+		}
+		else
+		{
+			req.event_id = req.params.eventid;
+			req.app.locals.db.getEvent(req, res, next);
+		}
 	}, 
 	function(req, res, next){
-		req.app.locals.db.getActivityTypes(req, res, next);
+		if (req.params.eventid === 'new')
+		{
+			req.app.locals.db.getActivityTypes(req, res, next);
+		}
+		else
+		{
+			req.app.locals.db.getActivityTypesForEvent(req, res, next);
+		}
 	}, 
 	function(req, res, next){
-		req.app.locals.db.getStages(req, res, next);
+		if (req.params.eventid === 'new')
+		{
+			res.stages = new Array();
+			next();
+		}
+		else
+		{
+			req.app.locals.db.getStages(req, res, next);
+		}
 	}, 
 	function(req, res, next){
 		res.render('admin-event', { 
@@ -120,7 +146,15 @@ router.get('/teams',
 
 router.get('/team/:teamid',   
 	function(req, res, next){
-		req.app.locals.db.getTeam(req, res, next);
+		if (req.params.teamid === 'new')
+		{
+			res.team = new Object();
+			next();
+		}
+		else
+		{
+			req.app.locals.db.getTeam(req, res, next);
+		}
 	}, 
 	function(req, res, next){
 		res.render('admin-team', { 
@@ -157,7 +191,15 @@ router.get('/charities',
 
 router.get('/charity/:charityid',   
 	function(req, res, next){
-		req.app.locals.db.getCharity(req, res, next);
+		if (req.params.charityid === 'new')
+		{
+			res.charity = new Object();
+			next();
+		}
+		else
+		{
+			req.app.locals.db.getCharity(req, res, next);
+		}
 	}, 
 	function(req, res, next){
 		res.render('admin-charity', { 
