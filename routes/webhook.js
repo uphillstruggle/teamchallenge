@@ -12,7 +12,8 @@ router.post('/',
 	},
 	function(req, res, next){
 		// 2 Get the activity types that qualify
-		req.app.locals.db.getActivityTypes(req, res, next);
+		req.event_id = process.env['EVENT_ID'];
+		req.app.locals.db.getActivityTypesForEvent(req, res, next);
 	}, 
 	function(req, res, next){
 		// 3. Use the refresh token to get a new access token
