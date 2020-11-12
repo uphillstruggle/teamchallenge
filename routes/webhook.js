@@ -24,6 +24,8 @@ router.post('/',
 	},
 	function(req, res, next){
 		// 5. Update athlete or activity recorda
+		console.log("Activity types allowed - ", res.activity_types);
+		console.log("This activity type - ", res.activity.type);
 		req.app.locals.db.processWebhook(req, res, next);
 	},
 	function(req, res, next){
