@@ -491,7 +491,7 @@ function getTotalDistance(req, res, next) {
 		{
 			// check activity is one of the right type
 			var matched = false;
-			res.activity_typess.forEach(function(item) { 
+			res.activity_types.forEach(function(item) { 
 				if (item.name === res.activity.type && item.allowed == true)
 				{
 					matched = true;
