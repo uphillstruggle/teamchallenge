@@ -496,7 +496,7 @@ function getTotalDistance(req, res, next) {
 				{
 					matched = true;
 				}
-			}
+			});
 			if (matched == false) {
 				// ignore this activity
 				console.log ("Activity type is not valid for event", res.activity.id, res.activity.type);
