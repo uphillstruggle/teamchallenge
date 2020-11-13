@@ -490,7 +490,14 @@ function getTotalDistance(req, res, next) {
 		if (req.webhook_object_type === 'activity')
 		{
 			// check activity is one of the right type
-			if (res.activity_types.indexOf(res.activity.type) == -1) {
+			var matched = false;
+			res.activity_typess.forEach(function(item) { 
+				if (item.name === res.activity.type && item.allowed == true)
+				{
+					matched = true;
+				}
+			}
+			if (matched == false) {
 				// ignore this activity
 				console.log ("Activity type is not valid for event", res.activity.id, res.activity.type);
 				next();
