@@ -343,8 +343,19 @@ function getTotalDistance(req, res, next) {
 					}
 				}
 
-				results.rows[yellow].jersey = 'images/yellow.png';
-				results.rows[polka].jersey = 'images/polkadot.png';
+
+				if (yellow != -1 && polka != -1)
+				{
+					if (yellow == polka)
+					{
+						results.rows[yellow].jersey = 'images/yellow-polka.png';
+					}
+					else
+					{
+						results.rows[yellow].jersey = 'images/yellow.png';
+						results.rows[polka].jersey = 'images/polkadot.png';
+					}
+				}
 				
 				next();
 			});
